@@ -1,0 +1,32 @@
+.tag {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 10px;
+
+  li {
+    padding: 5px 15px;
+    margin: 0 3px;
+    font-size: 13px;
+    color: #4a4a4a;
+    cursor: pointer;
+    border-radius: 15px;
+    line-height: 20px;
+    user-select: none;
+  }
+
+  li:hover {
+    color: #FA2800;
+  }
+
+  .active {
+    font-weight: 600;
+    color: white;
+    background: #FA2800;
+    transition: .5s;
+  }
+
+  .active:hover {
+    color: white;
+  }
+}

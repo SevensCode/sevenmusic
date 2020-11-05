@@ -1,0 +1,21 @@
+.pagination {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+
+  // 修改分页器的背景和字体颜色
+  ::v-deep {
+    .el-pagination.is-background .el-pager li:not(.disabled):hover {
+      //background-color: #fff; // 进行修改未选中背景和字体
+      color: #FA2800;
+    }
+
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+      background-color: #FA2800; // 进行修改选中项背景和字体
+      color: #fff;
+    }
+  }
+}

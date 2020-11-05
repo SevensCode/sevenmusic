@@ -1,0 +1,60 @@
+import Vue from 'vue'
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Message,
+  Card,
+  Tabs,
+  TabPane,
+  Menu,
+  MenuItem,
+  Col,
+  Row,
+  Carousel,
+  CarouselItem,
+  Backtop,
+  Main,
+  Header,
+  Footer,
+  Loading,
+  Alert,
+  Tag,
+  Pagination,
+  InfiniteScroll,
+  Avatar,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  Dialog
+} from 'element-ui'
+
+Vue.use(Button)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
+Vue.use(Card)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Col)
+Vue.use(Row)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
+Vue.use(Backtop)
+Vue.use(Main)
+Vue.use(Footer)
+Vue.use(Header)
+Vue.use(Loading)
+Vue.use(Alert)
+Vue.use(Tag)
+Vue.use(Pagination)
+Vue.use(InfiniteScroll)
+Vue.use(Avatar)
+Vue.use(Dropdown)
+Vue.use(DropdownItem)
+Vue.use(DropdownMenu)
+Vue.use(Dialog)
+Vue.prototype.$message = Message

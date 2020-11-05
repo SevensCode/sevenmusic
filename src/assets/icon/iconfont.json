@@ -1,0 +1,156 @@
+{
+  "id": "2170893",
+  "name": "music",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "8488781",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "236924",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "1623879",
+      "name": "徽章",
+      "font_class": "huizhang",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "14231942",
+      "name": "设 置",
+      "font_class": "shezhi",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "6119321",
+      "name": "语言",
+      "font_class": "yuyan",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "527556",
+      "name": "咖啡",
+      "font_class": "kafei",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "3262939",
+      "name": "爱心",
+      "font_class": "zan",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "12026128",
+      "name": "衣服",
+      "font_class": "yifu",
+      "unicode": "e6ef",
+      "unicode_decimal": 59119
+    },
+    {
+      "icon_id": "2384754",
+      "name": "风格",
+      "font_class": "fengge1",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "17829080",
+      "name": "star",
+      "font_class": "star",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "17829095",
+      "name": "heart",
+      "font_class": "heart",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "17829116",
+      "name": "fabulous",
+      "font_class": "fabulous",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "1316944",
+      "name": "首页_竖杠_时间提醒",
+      "font_class": "shouye_shugang_shijiantixing",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "5158719",
+      "name": "音乐",
+      "font_class": "yinle",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "12036444",
+      "name": "上一首",
+      "font_class": "shangyishou",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "12036446",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "12036447",
+      "name": "停止",
+      "font_class": "tingzhi",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "12036449",
+      "name": "下一首",
+      "font_class": "xiayishou",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "12036464",
+      "name": "循环06",
+      "font_class": "xunhuan",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "12036465",
+      "name": "随机04",
+      "font_class": "suiji",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "12036466",
+      "name": "循环02",
+      "font_class": "xunhuan1",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    }
+  ]
+}

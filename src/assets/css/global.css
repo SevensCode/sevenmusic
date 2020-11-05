@@ -1,0 +1,39 @@
+/* 全局样式表 */
+html, body, #app {
+    height: 100%;
+    width: 100%;
+
+}
+
+html::-webkit-scrollbar {
+    /*滚动条宽高设置*/
+    display: none;
+
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "pingFang SC", Arial, "Microsoft YaHei", sans-serif;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.el-card {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
+}
+
+.container {
+    height: inherit;
+    width: 90vw;
+    margin: 0 auto;
+    overflow: hidden;
+}
