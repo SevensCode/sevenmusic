@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="gen">
     <section class="container">
       <el-row class="label">
         <el-col :span="2">
@@ -52,14 +52,15 @@
       <!-- 主内容区域 -->
       <el-main>
         <!-- 精品歌单标签列表 -->
-        <section class="songList container">
-          <ul>
-            <li v-for="(item,i) in boutiquePlaylist" :key="i">
+        <section class="playlist container">
+          <ul class="list" v-if="!$store.state.loading">
+            <li v-for="(item,i) in boutiquePlaylist" :key="i" @click="openSonglist(item)">
               <img :src="item.coverImgUrl" alt="">
               <span><i class="el-icon-caret-right"></i> {{ item.playCount }}</span>
               <h1>{{ item.name }}</h1>
             </li>
           </ul>
+          <Loading v-else></Loading>
         </section>
         <!-- 分页 -->
         <section class="pagination" v-if="total>49">
@@ -77,8 +78,12 @@
 </template>
 
 <script>
-import '@/assets/css/Cart.less'
-import '@/assets/css/pagination.less'
+import '@/assets/css/common/playlist.less'
+import '@/assets/css/common/pagination.less'
+import Loading from '@/components/common/Loading/Loading'
+import tool from '@/utils/tool'
+import { getSonglistHotSort, getAFeaturedSonglist, getSonglistSort } from '@/API/server/api'
+
 export default {
   name: 'SongList',
   data () {
@@ -116,6 +121,7 @@ export default {
       }
     }
   },
+  components: { Loading },
   created () {
     this.getSonglist()
     this.getAllTagList()
@@ -123,15 +129,13 @@ export default {
   methods: {
     async getSonglist () {
       // 热门歌单标签
-      const { data: popularPlaylist } = await this.axios.get('/playlist/hot')
+      const { data: popularPlaylist } = await getSonglistHotSort()
       this.popularPlaylist = popularPlaylist.tags
       // 精品歌单列表
-      const { data: boutiquePlaylist } = await this.axios.get('/top/playlist', {
-        params: this.query
-      })
+      const { data: boutiquePlaylist } = await getAFeaturedSonglist(this.query)
       boutiquePlaylist.playlists.forEach(item => {
         item.playCount = item.playCount.toString().split('')
-        item.playCount = this.str(item.playCount.join(''))
+        item.playCount = tool.formatPlayCount(item.playCount.join(''))
       })
       this.boutiquePlaylist = boutiquePlaylist.playlists
       this.total = boutiquePlaylist.total
@@ -139,7 +143,7 @@ export default {
     //  获取全部标签
     async getAllTagList () {
       // 全部标签列表
-      const { data: res } = await this.axios.get('/playlist/catlist')
+      const { data: res } = await getSonglistSort()
       this.categories = res.categories
       res.sub.forEach(item => {
         switch (item.category) {
@@ -178,6 +182,12 @@ export default {
       this.query.cat = item.name
       this.show = false
       this.getSonglist()
+    },
+    openSonglist (item) {
+      this.$router.push({
+        path: '/songDetails',
+        query: { id: item.id }
+      })
     }
   }
 }
@@ -290,5 +300,7 @@ export default {
 .el-main {
   padding: 0;
   margin-top: 20px;
+  //height: 1612px;
+  //overflow: hidden;
 }
 </style>

@@ -6,6 +6,90 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9590199",
+      "name": "图标/静音",
+      "font_class": "jingyin",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "7374566",
+      "name": "暂停",
+      "font_class": "zanting",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "683347",
+      "name": "喇叭",
+      "font_class": "laba",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "10470551",
+      "name": "歌词",
+      "font_class": "geci",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "11020386",
+      "name": "音乐列表",
+      "font_class": "yinleliebiao",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    },
+    {
+      "icon_id": "7712687",
+      "name": "loading",
+      "font_class": "loading",
+      "unicode": "e730",
+      "unicode_decimal": 59184
+    },
+    {
+      "icon_id": "1783072",
+      "name": "脚印",
+      "font_class": "jiaoyin",
+      "unicode": "e699",
+      "unicode_decimal": 59033
+    },
+    {
+      "icon_id": "10158385",
+      "name": "火",
+      "font_class": "huo",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "6803482",
+      "name": "播放",
+      "font_class": "bofang1",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "11413052",
+      "name": "等级",
+      "font_class": "dengji",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "18000162",
+      "name": "男",
+      "font_class": "4-135",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "18000180",
+      "name": "女",
+      "font_class": "4-136",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
       "icon_id": "8488781",
       "name": "退出",
       "font_class": "tuichu",
@@ -88,13 +172,6 @@
       "font_class": "fabulous",
       "unicode": "e615",
       "unicode_decimal": 58901
-    },
-    {
-      "icon_id": "1316944",
-      "name": "首页_竖杠_时间提醒",
-      "font_class": "shouye_shugang_shijiantixing",
-      "unicode": "e62a",
-      "unicode_decimal": 58922
     },
     {
       "icon_id": "5158719",

@@ -17,7 +17,8 @@
 </template>
 
 <script>
-// import $bus from '@/components/$bus'
+import { loginByPhone, getUserInfo } from '@/API/server/userApi'
+
 export default {
   data () {
     return {
@@ -55,17 +56,18 @@ export default {
     Login () {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return false
-        const { data: res } = await this.axios.post('/login/cellphone', this.loginForm)
-        if (res.code !== 200) return this.$message.error(res.message)
+        const { data: user } = await loginByPhone(this.loginForm)
+        if (user.code !== 200) return this.$message.error(user.message)
+        // 保存登录成功后获取到的 token
+        window.sessionStorage.setItem('token', user.token)
+        // 保存登录成功后获取到的 cookie
+        window.sessionStorage.setItem('cookie', user.cookie)
+        // 调用获取用户信息接口
+        const { data: userInfo } = await getUserInfo(user.profile.userId)
+        // 保存用户信息
+        window.sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         this.$message.success('登录成功')
-        window.sessionStorage.setItem('token', res.token)
-        // 组件传值
-        // $bus.$emit('user', res.profile)
-        await this.$router.push({
-          name: 'home',
-          path: '/home',
-          query: { user: JSON.stringify(res.profile) }
-        })
+        await this.$router.push('/home')
       })
     }
   }

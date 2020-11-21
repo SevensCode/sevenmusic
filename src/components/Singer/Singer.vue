@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container singer">
     <ul class="tag">
       <li v-for="(item,i) in areaList" :key="i" :class="areaActive===item.index?'active':''" @click="areaTag(item)">
         {{ item.name }}
@@ -16,32 +16,26 @@
         {{ item.name }}
       </li>
     </ul>
-    <ul class="singerList">
+    <ul class="singerList" v-if="!$store.state.loading">
       <li v-for="item in singerList" :key="item.id">
         <img :src="item.img1v1Url" alt="">
         <h2>{{ item.name }}</h2>
         <p>单曲数:{{ item.musicSize }}</p>
       </li>
     </ul>
-    <!-- 分页 -->
-    <section class="pagination">
-      <el-pagination
-          @current-change="handleCurrentChange"
-          :page-size="query.limit"
-          background
-          :total="1000"
-          layout="prev, pager, next, jumper">
-      </el-pagination>
-    </section>
+    <Loading v-else></Loading>
   </div>
 </template>
 
 <script>
-import '@/assets/css/Tag.less'
-import '@/assets/css/singerList.less'
-import '@/assets/css/pagination.less'
+import '@/assets/css/common/Tag.less'
+import '@/assets/css/common/singerList.less'
+import Loading from '@/components/common/Loading/Loading'
+import { getSingerSortList } from '@/API/server/api'
+
 export default {
   name: 'Singer',
+  components: { Loading },
   data () {
     return {
       query: {
@@ -103,7 +97,8 @@ export default {
       // 默认
       areaActive: -1,
       typeActive: -1,
-      letterActive: '热门'
+      letterActive: '热门',
+      loading: false
     }
   },
   created () {
@@ -111,7 +106,7 @@ export default {
   },
   methods: {
     async getPopularSingers () {
-      const { data: res } = await this.axios.get('/artist/list', { params: this.query })
+      const { data: res } = await getSingerSortList(this.query)
       this.singerList = res.artists
       console.log(res)
     },
@@ -139,11 +134,6 @@ export default {
         return this.getPopularSingers()
       }
       this.query.initial = item.name
-      this.getPopularSingers()
-    },
-    // 监听分页
-    handleCurrentChange (newPage) {
-      this.query.offset = (newPage - 1) * 30
       this.getPopularSingers()
     }
   }

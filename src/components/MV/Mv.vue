@@ -19,7 +19,7 @@
       </li>
     </ul>
     <!-- MV列表 -->
-    <ul class="MV">
+    <ul v-if="!$store.state.loading" class="video">
       <li v-for="(item,i) in mvList" :key="i">
         <!-- Mv封面 -->
         <img :src="item.cover" alt="">
@@ -37,14 +37,20 @@
         <el-button circle><i class="el-icon-caret-right"></i></el-button>
       </li>
     </ul>
+    <Loading v-else></Loading>
   </div>
 </template>
 
 <script>
-import '@/assets/css/Tag.less'
+import '@/assets/css/common/Tag.less'
+import '@/assets/css/common/video.less'
+import Loading from '@/components/common/Loading/Loading'
+import tool from '@/utils/tool'
+import { getAllMv } from '@/API/server/api'
 
 export default {
   name: 'Mv',
+  components: { Loading },
   data () {
     return {
       mvList: [],
@@ -69,15 +75,15 @@ export default {
   },
   methods: {
     async getMvList () {
-      const { data: res } = await this.axios.get('/mv/all', { params: this.query })
+      const { data: res } = await getAllMv(this.query)
       res.data.forEach(item => {
-        // 换算mv时长
-        const mm = this.doubleDate(new Date(item.duration).getMinutes())
-        const ss = this.doubleDate(new Date(item.duration).getSeconds())
+        // 补0
+        const mm = tool.formatZero(new Date(item.duration).getMinutes())
+        const ss = tool.formatZero(new Date(item.duration).getSeconds())
         item.duration = mm + ':' + ss
         // 换算播放量
         item.playCount = item.playCount.toString().split('')
-        item.playCount = this.str(item.playCount.join(''))
+        item.playCount = tool.formatPlayCount(item.playCount.join(''))
       })
       this.mvList = res.data
       console.log(res)
@@ -109,94 +115,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.MV {
-  display: grid;
-  grid-template-columns: repeat(4, 315px);
-  grid-column-gap: 40px;
-  justify-content: left;
-  justify-items: center;
-  margin-top: 20px;
 
-  li {
-    width: 100%;
-    height: 176px;
-    border-radius: 5px;
-    position: relative;
-    margin-bottom: 60px;
-
-    img {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      border-radius: 5px;
-    }
-
-    .playVolume {
-      font-size: 12px;
-      color: white;
-      background: black;
-      padding: 5px 10px;
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      border-radius: 10px;
-    }
-
-    .mask {
-      width: 100%;
-      height: 35px;
-      position: absolute;
-      bottom: 0;
-      background: rgba(0, 0, 0, .5);
-      font-size: 14px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px;
-    }
-
-    p {
-      position: absolute;
-      left: 0;
-      bottom: -30px;
-      font-size: 14px;
-      color: #4a4a4a;
-      display: -webkit-box; /*将对象转为弹性盒模型展示*/
-      -webkit-box-orient: vertical; /*设置弹性盒模型子元素的排列方式*/
-      -webkit-line-clamp: 1; /*限制文本行数*/
-      overflow: hidden; /*超出隐藏*/
-    }
-
-    .el-button {
-      background: #FA2800;
-      width: 32px;
-      height: 32px;
-      color: white;
-      border: none;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      margin-top: -16px;
-      margin-left: -16px;
-      font-size: 22px;
-      display: none;
-
-      i {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        margin-top: -12px;
-        margin-left: -12px;
-      }
-    }
-  }
-
-  li:hover .el-button {
-    display: block;
-  }
-}
 </style>

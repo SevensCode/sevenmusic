@@ -27,7 +27,11 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  Dialog
+  Dialog,
+  Table,
+  TableColumn,
+  Tooltip,
+  Slider
 } from 'element-ui'
 
 Vue.use(Button)
@@ -57,4 +61,8 @@ Vue.use(Dropdown)
 Vue.use(DropdownItem)
 Vue.use(DropdownMenu)
 Vue.use(Dialog)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Tooltip)
+Vue.use(Slider)
 Vue.prototype.$message = Message
