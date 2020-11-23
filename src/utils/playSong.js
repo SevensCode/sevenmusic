@@ -9,7 +9,6 @@ export const getMusicInfo = async (id) => {
   const mm = tool.formatZero(new Date(musicInfo.songs[0].dt).getMinutes())
   const ss = tool.formatZero(new Date(musicInfo.songs[0].dt).getSeconds())
   musicInfo.songs[0].playT = mm + ':' + ss
-  // console.log(item)
   store.commit('currendMusicInfo', musicInfo.songs[0])
 }
 // 播放音乐
@@ -112,34 +111,39 @@ export const lyrics = async () => {
   const lyricsBox = store.state.lyricsDom
   // 获取歌词
   const { data: lyrics } = await getLyrics(id)
-  // 原歌词
-  const Olyrics = lyrics.lrc.lyric.split(/\[.*?\]/).filter(value => !!value)
-  store.commit('getLyricsTime', lyrics.lrc.lyric.match(/\d{2,}?:\d{2}/g))
-  lyricsBox.innerHTML = ''
-  Olyrics.forEach((item) => {
-    const p = document.createElement('p')
-    p.className = 'lyricsStyle'
-    p.innerText = item
-    lyricsBox.appendChild(p)
-  })
+  console.log(lyrics)
+  if (lyrics.klyric && lyrics.lrc) {
+    // 原歌词
+    const Olyrics = lyrics.lrc.lyric.split(/\[.*?\]/).filter(value => !!value)
+    store.commit('getLyricsTime', lyrics.lrc.lyric.match(/\d{2,}?:\d{2}/g))
+    lyricsBox.innerHTML = ''
+    Olyrics.forEach((item) => {
+      const p = document.createElement('p')
+      p.className = 'lyricsStyle'
+      p.innerText = item
+      lyricsBox.appendChild(p)
+    })
+  }
 }
 
 // 歌词与歌曲同步
 export const songAndLyricsSynchronization = () => {
   const p = document.querySelectorAll('.lyricsStyle')
-  let index = store.state.lyricsTime.findIndex(item => {
-    return item === store.state.currendPlayTime
-  })
-  try {
-    p[index].classList.add('lyricsActive')
-    p.forEach((item) => {
-      item.classList.remove('lyricsActive')
+  if (store.state.lyricsTime) {
+    let index = store.state.lyricsTime.findIndex(item => {
+      return item === store.state.currendPlayTime
     })
-    if (p[index].innerHTML === '<br>') {
-      index -= 1
+    try {
+      p[index].classList.add('lyricsActive')
+      p.forEach((item) => {
+        item.classList.remove('lyricsActive')
+      })
+      if (p[index].innerHTML === '<br>') {
+        index -= 1
+      }
+      store.commit('upDateIndex', index)
+      p[index].classList.add('lyricsActive')
+    } catch (e) {
     }
-    store.commit('upDateIndex', index)
-    p[index].classList.add('lyricsActive')
-  } catch (e) {
   }
 }

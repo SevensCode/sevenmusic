@@ -2,7 +2,7 @@
   <section class="container newSong">
     <p class="title"><span class="bar"></span>推荐新歌曲</p>
     <ul class="newSongList">
-      <li v-for="(item,i) in newSongList" :key="item.id">
+      <li v-for="(item,i) in newSongList" :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'redli':'li'" :key="item.id">
         <div :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'hide':'index'">
           <span v-if="i>8">{{ i + 1 }}</span>
           <span v-else>0{{ i + 1 }}</span>
@@ -54,6 +54,7 @@ export default {
     async playMusic (item) {
       // 获取歌单列表
       this.$store.commit('getPlaylist', this.newSongList)
+      console.log(this.newSongList)
       // 获取歌曲信息
       await getMusicInfo(item.id)
       await lyrics()
@@ -90,11 +91,11 @@ export default {
     justify-content: center;
     align-items: center;
 
-    li:hover .index {
+    .li:hover .index {
       display: none;
     }
 
-    li:hover .playAndPause {
+    .li:hover .playAndPause {
       display: block;
     }
 
@@ -111,7 +112,7 @@ export default {
       width: 30px;
     }
 
-    li {
+    .li {
       width: 100%;
       height: 80px;
       background: white;
@@ -185,6 +186,91 @@ export default {
             -webkit-box-orient: vertical; /*设置弹性盒模型子元素的排列方式*/
             -webkit-line-clamp: 1; /*限制文本行数*/
             overflow: hidden; /*超出隐藏*/
+          }
+        }
+      }
+
+      .album {
+        width: 250px;
+        text-align: center;
+      }
+    }
+    .redli {
+      width: 100%;
+      height: 80px;
+      background: white;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #DDDDDD;
+      padding: 0 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #FA2800;
+      .index {
+        span {
+          display: block;
+          height: 30px;
+          line-height: 30px;
+          text-align: center;
+          width: 30px;
+          color: #FA2800;
+        }
+      }
+
+      .playAndPause {
+        display: none;
+        color: #FA2800;
+        i {
+          color: #FA2800;
+          display: block;
+          height: 30px;
+          line-height: 30px;
+          text-align: center;
+          width: 30px;
+        }
+      }
+
+      span {
+        font-weight: 600;
+        font-size: 14px;
+        color: #FA2800;
+      }
+
+      .songContent {
+        img {
+          width: 55px;
+          height: 55px;
+          display: inline-block;
+          float: left;
+          margin-right: 20px;
+          color: #FA2800;
+        }
+
+        div {
+          float: left;
+          width: 91px;
+          font-size: 14px;
+
+          p {
+            line-height: 27.5px;
+            text-align: center;
+            color: #FA2800;
+            display: -webkit-box; /*将对象转为弹性盒模型展示*/
+            -webkit-box-orient: vertical; /*设置弹性盒模型子元素的排列方式*/
+            -webkit-line-clamp: 1; /*限制文本行数*/
+            overflow: hidden; /*超出隐藏*/
+          }
+
+          h1 {
+            line-height: 27.5px;
+            text-align: center;
+            font-size: 14px;
+            display: -webkit-box; /*将对象转为弹性盒模型展示*/
+            -webkit-box-orient: vertical; /*设置弹性盒模型子元素的排列方式*/
+            -webkit-line-clamp: 1; /*限制文本行数*/
+            overflow: hidden; /*超出隐藏*/
+            color: #FA2800;
           }
         }
       }

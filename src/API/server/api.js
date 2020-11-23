@@ -59,7 +59,8 @@ export const getSonglistSort = () => axios.get('/playlist/catlist')
  * @method 获取歌手分类列表
  * @param {number} query.limit:  返回数量 , 默认为 30
  * @param {number} query.offset:  偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
- * @param {string} query.initial:  按首字母索引查找参数,如 /artist/list?type=1&area=96&initial=b 返回内容将以 name 字段开头为 b 或者拼音开头为 b 为顺序排列, 热门传-1,#传0
+ * @param {string} query.initial:  按首字母索引查找参数,如 /artist/list?type=1&area=96&initial=b 返回内容将以 name 字段开头为 b 或者拼音开头为 b
+ *   为顺序排列, 热门传-1,#传0
  * @param {number} query.type:  获取类型。 可取值为 -1:全部 1:男歌手 2:女歌手 3:乐队 例如：type:-1
  * @param {number} query.area:  获取类型。 可取值为 -1:全部 7华语 96欧美 8:日本 16韩国 0:其他 例如 type:-1
  * */
@@ -82,7 +83,8 @@ export const getAllMv = (query) => axios.get('/mv/all', { params: query })
  *  @param {String} query.keywords：关键词 (必选参数)
  *  @param {Number} query.limit：返回数量 , 默认为 30
  *  @param {Number} query.offset：偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
- *  @param {Number} query.type：1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018:综合
+ *  @param {Number} query.type：1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频,
+ *   1018:综合
  * */
 export const search = (query) => axios.get('/cloudsearch', { params: query })
 
@@ -97,9 +99,9 @@ export const getPalylistDetails = (query) => axios.get('/playlist/detail', { par
 /**
  * 获取歌曲详情
  * @method getSongDetails
- * @param {number} ids: 音乐ID ,如 ids = 347230
+ * @param {string} ids: 音乐ID ,如 ids = 347230
  * */
-export const getSongDetails = ids => axios.get('song/detail', { params: { ids } })
+export const getSongDetails = ids => axios.get('song/detail', { params: { ids: ids } })
 
 /**
  * 获取歌单收藏者

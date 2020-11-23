@@ -3,7 +3,7 @@
     <section class="bj"></section>
     <section class="main container">
       <!-- 个人信息 -->
-      <el-card class="personalInformation" body-style="padding:0">
+      <el-card body-style="padding:0" class="personalInformation">
         <section class="bj">
           <img :src="userInfo.profile.backgroundUrl" alt="">
         </section>
@@ -50,42 +50,52 @@
           </section>
         </header>
         <button><i class="iconfont icon-bofang1"></i>播放全部</button>
-        <el-table v-if="loading" :data="songRankingList" style="width: 100%" stripe row-class-name="hoverPlay">
-          <el-table-column label="序号" align="center">
+        <el-table v-if="isShow" :data="songRankingList" row-class-name="hoverPlay" stripe style="width: 100%">
+          <el-table-column align="center" label="序号">
             <template slot-scope="scope">
-              <span class="index">{{ scope.row.index }}</span>
-              <i class="el-icon-video-play play"></i>
+              <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'hide':'index'">
+              <span v-if="scope.row.index>8">
+                {{ scope.row.index }}
+              </span>
+                <span v-else>0{{ scope.row.index }}</span>
+              </div>
+              <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'show':'playAndPause'">
+                <i v-if="$store.state.musicInfo.id===scope.row.id&&$store.state.playing"
+                   class="el-icon-video-pause pause"
+                   @click="pauseMusic()"></i>
+                <i v-else class="el-icon-video-play play" @click="playMusic(scope.row)"></i>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column prop="name" width="200px" label="歌曲">
+          <el-table-column label="歌曲" prop="name" width="200px">
             <template slot-scope="scope">
               <div class="singer">
-                <img :src="scope.row.song.al.picUrl" alt="" width="35" height="35">
+                <img :src="scope.row.song.al.picUrl" alt="" height="35" width="35">
                 <span class="album">{{ scope.row.song.name }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="song.ar[0].name" width="120px" label="歌手"></el-table-column>
-          <el-table-column prop="song.al.name" width="90px" label="专辑">
+          <el-table-column label="歌手" prop="song.ar[0].name" width="120px"></el-table-column>
+          <el-table-column label="专辑" prop="song.al.name" width="90px">
             <template slot-scope="scope">
               <span class="album">《{{ scope.row.song.al.name }}》</span>
             </template>
           </el-table-column>
-          <el-table-column prop="song.dt" label="时长" width="70px"></el-table-column>
+          <el-table-column label="时长" prop="song.dt" width="70px"></el-table-column>
         </el-table>
         <Loading v-else></Loading>
       </el-card>
       <!-- 我的歌单列表 -->
       <section class="mySongList">
         <!--我创建的歌单列表-->
-        <el-card class="myCreateSongList" body-style="padding:20px 20px 0 20px">
+        <el-card body-style="padding:20px 20px 0 20px" class="myCreateSongList">
           <header>
             <span class="bar"></span>
             <span>我创建的歌单</span>
           </header>
           <main class="SongListStyle">
             <ul>
-              <li v-for="item in myCreateSongList" :key="item.id">
+              <li v-for="item in myCreateSongList" :key="item.id" @click="openSonglist(item)">
                 <img :src="item.coverImgUrl" alt="">
                 <span><i class="el-icon-caret-right"></i> {{ item.playCount }}</span>
                 <h1>{{ item.name }}</h1>
@@ -94,14 +104,14 @@
           </main>
         </el-card>
         <!--我收藏的歌单列表-->
-        <el-card class="myCreateSongList fu" body-style="padding:20px 20px 0 20px">
+        <el-card body-style="padding:20px 20px 0 20px" class="myCreateSongList fu">
           <header>
             <span class="bar"></span>
             <span>我创建的歌单</span>
           </header>
           <main class="SongListStyle">
             <ul>
-              <li v-for="item in myKeepSongList" :key="item.id">
+              <li @click="openSonglist(item)" v-for="item in myKeepSongList" :key="item.id">
                 <img :src="item.coverImgUrl" alt="">
                 <span><i class="el-icon-caret-right"></i> {{ item.playCount }}</span>
                 <h1>{{ item.name }}</h1>
@@ -116,9 +126,9 @@
 
 <script>
 import tool from '@/utils/tool'
-import axios from '@/utils/request'
 import { getUserPlaybackHistory, getUserSonglist } from '@/API/server/userApi'
 import Loading from '@/components/common/Loading/Loading'
+import { getMusicInfo, lyrics, pauseMusic, playMusic } from '@/utils/playSong'
 
 export default {
   name: 'User',
@@ -142,18 +152,10 @@ export default {
       myCreateSongList: [],
       // 我收藏的歌单
       myKeepSongList: [],
-      loading: false
+      isShow: false
     }
   },
   created () {
-    axios.interceptors.request.use(config => {
-      this.loading = false
-      return config
-    })
-    axios.interceptors.response.use(config => {
-      this.loading = true
-      return config
-    })
     this.getrankingList()
     this.getMyCreateSongList()
   },
@@ -174,6 +176,7 @@ export default {
         item.song.dt = mm + ':' + ss
       })
       console.log(this.userId)
+      this.isShow = true
     },
     // 获取我创建的歌单列表
     async getMyCreateSongList () {
@@ -199,6 +202,45 @@ export default {
       this.queryInfo.type = 0
       this.active = 'all'
       this.getrankingList()
+    },
+    async playMusic (item) {
+      // 获取歌单列表
+      const arr = []
+      this.songRankingList.forEach(item => {
+        arr.push(item.song)
+      })
+      this.$store.commit('getPlaylist', arr)
+      console.log(arr)
+      // 获取歌曲信息
+      await getMusicInfo(item.song.id)
+      await lyrics()
+      // 改变状态 播放中
+      this.$store.commit('playing')
+      // 播放
+      await playMusic()
+    }, // 暂停
+    pauseMusic () {
+      // 改变播放状态
+      this.$store.commit('pause')
+      // 暂停
+      pauseMusic()
+    },
+    async playAll () {
+      const arr = []
+      this.songRankingList.forEach(item => {
+        arr.push(item.song)
+      })
+      this.$store.commit('getPlaylist', arr)
+      await getMusicInfo(arr[0].id)
+      await lyrics()
+      this.$store.commit('playing')
+      await playMusic()
+    },
+    openSonglist (item) {
+      this.$router.push({
+        path: '/songDetails',
+        query: { id: item.id }
+      })
     }
   }
 }
@@ -423,18 +465,10 @@ export default {
       overflow: hidden; /*超出隐藏*/
     }
 
-    .play {
+    .playAndPause {
       display: none;
       color: #FA2800;
       cursor: pointer;
-    }
-
-    .hoverPlay:hover .play {
-      display: block;
-    }
-
-    .hoverPlay:hover .index {
-      display: none;
     }
   }
 
@@ -528,6 +562,27 @@ export default {
       }
     }
   }
+}
 
+.hoverPlay:hover .index {
+  display: none;
+}
+
+.hoverPlay:hover .playAndPause {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+  color: #FA2800;
+  text-align: center;
+}
+
+.red {
+  color: #FA2800;
 }
 </style>

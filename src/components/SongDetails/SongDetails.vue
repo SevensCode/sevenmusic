@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!$store.state.loading&&isShow" class="container songDetails">
+  <div v-if="isShow" class="container songDetails">
     <!-- 歌单详情页 -->
     <el-card>
       <!-- 歌单信息 -->
@@ -28,16 +28,18 @@
       </header>
       <!-- 按钮收藏区域 -->
       <section class="butAndKeep">
-        <el-button class="all"><i class="iconfont icon-bofang1"></i>播放全部</el-button>
+        <el-button class="all" @click="playAll"><i class="iconfont icon-bofang1"></i>播放全部</el-button>
         <el-button class="keep"><i class="iconfont icon-zan"></i>收藏</el-button>
       </section>
       <!-- 歌曲列表 -->
       <el-table :data="songlist" row-class-name="hoverPlay" stripe style="width: 100%">
-        <el-table-column align="center" label="序号" width="100">
+        <el-table-column align="center" class-name="" label="序号" width="100">
           <template slot-scope="scope">
             <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'hide':'index'">
-              <span v-if="scope.row.index>8">{{ scope.row.index }}</span>
-              <span v-else>0{{ scope.row.index }}</span>
+              <span v-if="scope.row.index>8" :class="red(scope.row)">
+                {{ scope.row.index }}
+              </span>
+              <span v-else :class="red(scope.row)">0{{ scope.row.index }}</span>
             </div>
             <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'show':'playAndPause'">
               <i v-if="$store.state.musicInfo.id===scope.row.id&&$store.state.playing" class="el-icon-video-pause pause"
@@ -50,24 +52,33 @@
           <template slot-scope="scope">
             <div class="songmap">
               <img :src="scope.row.al.picUrl" alt="">
-              <span>{{ scope.row.name }}</span>
+              <span :class="red(scope.row)">{{ scope.row.name }}</span>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="歌手" width="225">
           <template slot-scope="scope">
             <span v-for="(item,i) in scope.row.ar" :key="i">
-              <span v-if="scope.row.ar.length===1">{{ item.name }}</span>
-              <span v-else-if="scope.row.ar.length>1">
+              <span v-if="scope.row.ar.length===1"
+                    :class="red(scope.row)">{{ item.name }}</span>
+              <span v-else-if="scope.row.ar.length>1" :class="red(scope.row)">
                 {{ item.name }}
-                <span v-if="item.name===scope.row.ar[scope.row.ar.length - 1].name"></span>
-                <span v-else>/</span>
+                <span v-if="item.name===scope.row.ar[scope.row.ar.length - 1].name" :class="red(scope.row)"></span>
+                <span v-else :class="red(scope.row)">/</span>
               </span>
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="专辑" prop="al.name" show-overflow-tooltip width="135"></el-table-column>
-        <el-table-column label="时长" prop="dt" sh></el-table-column>
+        <el-table-column label="专辑" prop="al.name" show-overflow-tooltip width="135">
+          <template slot-scope="scope">
+            <span :class="red(scope.row)">{{ scope.row.al.nmae }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="时长" prop="dt">
+          <template slot-scope="scope">
+            <span :class="red(scope.row)">{{ scope.row.dt }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
     <!-- 其他 -->
@@ -84,7 +95,7 @@
       <el-card class="other">
         <span class="bar"></span>
         <span class="title">相关推荐</span>
-        <section v-for="(item,i) in relatedSuggestion" :key="i" class="relatedSuggestion">
+        <section v-for="(item,i) in relatedSuggestion" :key="i" class="relatedSuggestion" @click="openSonglist(item)">
           <img :src="item.coverImgUrl" alt="">
           <section class="content">
             <h3 class="suo1">{{ item.name }}</h3>
@@ -121,6 +132,7 @@ import {
   getRelatedPlaylistRecommendations,
   getSongDetails
 } from '@/API/server/api'
+import { getMusicInfo, lyrics, pauseMusic, playMusic } from '@/utils/playSong'
 
 export default {
   name: 'SongDetails',
@@ -190,6 +202,40 @@ export default {
         item.time = this.tool.getDistanceSpecifiedTime(item.time)
       })
       this.recentComments = res.comments
+    },
+    async playMusic (item) {
+      // 获取歌单列表
+      this.$store.commit('getPlaylist', this.songlist)
+      // 获取歌曲信息
+      await getMusicInfo(item.id)
+      await lyrics()
+      // 改变状态 播放中
+      this.$store.commit('playing')
+      // 播放
+      await playMusic()
+    }, // 暂停
+    pauseMusic () {
+      // 改变播放状态
+      this.$store.commit('pause')
+      // 暂停
+      pauseMusic()
+    },
+    async playAll () {
+      this.$store.commit('getPlaylist', this.songlist)
+      await getMusicInfo(this.songlist[0].id)
+      await lyrics()
+      this.$store.commit('playing')
+      await playMusic()
+    },
+    red (item) {
+      return this.$store.state.musicInfo.id === item.id && this.$store.state.playing ? 'red' : ''
+    },
+    openSonglist (item) {
+      this.$router.push({
+        path: '/songDetails',
+        query: { id: item.id }
+      })
+      location.reload()
     }
   }
 }
@@ -393,10 +439,7 @@ export default {
   .show {
     display: block;
     color: #FA2800;
-    height: 30px;
-    line-height: 30px;
     text-align: center;
-    width: 30px;
   }
 
   .other {
@@ -515,5 +558,9 @@ export default {
       }
     }
   }
+}
+
+.red {
+  color: #FA2800;
 }
 </style>

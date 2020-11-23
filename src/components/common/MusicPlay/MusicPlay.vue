@@ -55,7 +55,7 @@
         <span class="title">播放列表</span>
         <section class="outer">
           <ul ref="playlist" class="playlist">
-            <li v-for="(item,i) in $store.state.playlist" :key="i">
+            <li v-for="(item,i) in $store.state.playlist" :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'redli':'li'" :key="i">
               <p class="content">
                 <section :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'hide':'index'">
                   <span v-if="i<9">0{{ i + 1 }}</span>
@@ -66,7 +66,8 @@
                      class="el-icon-video-pause pause" @click="playlistPauseMusic()"></i>
                   <i v-else class="el-icon-video-play play" @click="playlistPlayMusic(item)"></i>
                 </section>
-                <span class="name">{{ item.song.name }}</span>
+                <span class="name" v-if="item.song">{{ item.song.name }}</span>
+                <span class="name" v-else>{{ item.name }}</span>
               </p>
               <i class="el-icon-close"></i>
             </li>
@@ -367,7 +368,7 @@ export default {
         overflow-x: hidden;
         overflow-y: scroll;
 
-        li {
+        .li {
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -406,14 +407,56 @@ export default {
               }
             }
           }
+        }
+        .redli {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          height: 20px;
+          margin: 10px 0;
+          font-size: 14px;
+          cursor: pointer;
+          user-select: none;
+          color: #FA2800;
+          .content {
+            display: flex;
+            color: #FA2800;
 
+            .name {
+              line-height: 30px;
+              color: #FA2800;
+            }
+
+            .index {
+              span {
+                display: block;
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                width: 30px;
+                color: #FA2800;
+              }
+            }
+
+            .playAndPause {
+              display: none;
+              i {
+                color: #FA2800;
+                display: block;
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                width: 30px;
+              }
+            }
+          }
         }
 
-        li:hover .index {
+        .li:hover .index {
           display: none;
         }
 
-        li:hover .playAndPause {
+        .li:hover .playAndPause {
           display: block;
         }
 
