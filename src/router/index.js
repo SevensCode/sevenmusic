@@ -11,6 +11,7 @@ const Mv = () => import('@/components/MV/Mv')
 const User = () => import('@/components/User/User')
 const Search = () => import('@/components/Serach/Search')
 const SongDetails = () => import('@/components/SongDetails/SongDetails')
+const VideoDetails = () => import('@/components/Video/MvDeatils')
 Vue.use(VueRouter)
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = VueRouter.prototype.push
@@ -71,6 +72,11 @@ const router = new VueRouter({
       {
         path: '/songDetails',
         component: SongDetails
+      },
+      // 视频详情
+      {
+        path: '/videoDeatils',
+        component: VideoDetails
       }
     ]
   }]

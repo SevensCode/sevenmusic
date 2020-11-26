@@ -96,11 +96,13 @@ export default {
       if (command === 'signOut') {
         window.sessionStorage.removeItem('userInfo')
         window.sessionStorage.removeItem('token')
+        window.sessionStorage.removeItem('cookie')
         this.noLogin = true
         this.hasLogin = false
         if (window.location.hash === '#/user') {
-          this.$router.push('/find')
+          return this.$router.push('/find')
         }
+        location.reload()
       }
     },
     showSearchDialog () {
@@ -210,6 +212,7 @@ export default {
     }
   }
 }
+
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all 0.5s;
 }

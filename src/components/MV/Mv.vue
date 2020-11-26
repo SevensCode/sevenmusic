@@ -20,7 +20,7 @@
     </ul>
     <!-- MV列表 -->
     <ul v-if="!$store.state.loading" class="video">
-      <li v-for="(item,i) in mvList" :key="i">
+      <li v-for="(item,i) in mvList" :key="i" @click="openVideoPlayer(item)">
         <!-- Mv封面 -->
         <img :src="item.cover" alt="">
         <!-- 播放量 -->
@@ -103,12 +103,11 @@ export default {
       this.query.order = item
       this.getMvList()
     },
-    doubleDate (n) {
-      if (n < 10) {
-        return '0' + n
-      } else {
-        return n
-      }
+    openVideoPlayer (item) {
+      this.$router.push({
+        path: '/videoDeatils',
+        query: { id: item.id }
+      })
     }
   }
 }

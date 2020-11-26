@@ -245,7 +245,6 @@ export default {
 .songDetails {
   display: grid;
   grid-template-columns: 980px 380px;
-  //grid-column-gap: 50px;
   justify-content: space-between;
   align-items: start;
 

@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14005427",
+      "name": "收 藏",
+      "font_class": "shoucang",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "3248631",
+      "name": "分享",
+      "font_class": "fenxiang",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "3735690",
+      "name": "留言",
+      "font_class": "tubiao-",
+      "unicode": "e79e",
+      "unicode_decimal": 59294
+    },
+    {
+      "icon_id": "4701601",
+      "name": "消息",
+      "font_class": "xiaoxi-s",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "9965611",
+      "name": "留言",
+      "font_class": "liuyan",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "17455602",
+      "name": "MV",
+      "font_class": "MV",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
       "icon_id": "9590199",
       "name": "图标/静音",
       "font_class": "jingyin",
