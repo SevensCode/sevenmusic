@@ -26,7 +26,7 @@
             <el-button v-show="noLogin" type="text" @click="login">登录</el-button>
             <!-- 头像 -->
             <el-avatar v-show="hasLogin" :src="user.profile.avatarUrl"></el-avatar>
-            <el-dropdown v-show="hasLogin" trigger="click" @command="handleCommand">
+            <el-dropdown v-show="hasLogin" style="margin-left: 20px" trigger="click" @command="handleCommand">
                   <span class="el-dropdown-link">
                     {{ user.profile.nickname }}
                     <i class="el-icon-arrow-down el-icon--right"></i>

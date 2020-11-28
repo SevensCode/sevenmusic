@@ -26,10 +26,12 @@
         <section class="postComments">
           <img :src="userInfo.profile.avatarUrl" alt="">
           <label>
-            <textarea v-model="query.content" placeholder="瞅啥呢！"></textarea>
+            <textarea v-model="query.content" maxlength="140" placeholder="瞅啥呢！"
+                      @input="inputComment()"></textarea>
           </label>
         </section>
         <section class="btn">
+          <span>{{ maxCommentLength }}</span>
           <button class="postBut" @click="sendComment">评论</button>
         </section>
       </section>
@@ -80,10 +82,11 @@
                 <section class="postComments">
                   <img :src="userInfo.profile.avatarUrl" alt="">
                   <label>
-                    <textarea v-model="query.content" placeholder="瞅啥呢！"></textarea>
+                    <textarea v-model="query.content" maxlength="140" @input="inputComment" placeholder="瞅啥呢！"></textarea>
                   </label>
                 </section>
                 <section class="btn">
+                  <span>{{ maxCommentLength }}</span>
                   <button class="postBut" @click="replyToComments">评论</button>
                 </section>
               </section>
@@ -129,10 +132,11 @@
                 <section class="postComments">
                   <img :src="userInfo.profile.avatarUrl" alt="">
                   <label>
-                    <textarea v-model="query.content" placeholder="瞅啥呢！"></textarea>
+                    <textarea v-model="query.content" placeholder="瞅啥呢！" maxlength="140" @input="inputComment"></textarea>
                   </label>
                 </section>
                 <section class="btn">
+                  <span>{{ maxCommentLength }}</span>
                   <button class="postBut" @click="replyToComments">评论</button>
                 </section>
               </section>
@@ -231,7 +235,9 @@ export default {
         // 回复的评论id (回复评论时必填)
         commentId: 0,
         cookie: window.sessionStorage.getItem('cookie')
-      }
+      },
+      // 最大评论长度
+      maxCommentLength: 140
     }
   },
   created () {
@@ -289,6 +295,8 @@ export default {
       this.commentAreaIsShow = true
       // 关闭评论回复
       this.query.commentId = 0
+      // 清空 输入的内容
+      this.query.content = ''
     },
     // 发送评论
     async sendComment () {
@@ -313,6 +321,10 @@ export default {
     },
     login () {
       this.$router.push('login')
+    },
+    inputComment () {
+      this.maxCommentLength = 140
+      this.maxCommentLength -= this.query.content.length
     }
   }
 }
@@ -477,6 +489,11 @@ export default {
       .btn {
         display: flex;
         justify-content: flex-end;
+        align-items: center;
+
+        span {
+          margin-right: 20px;
+        }
 
         button {
           border: none;
@@ -671,7 +688,9 @@ export default {
         .btn {
           display: flex;
           justify-content: flex-end;
-
+          span{
+            margin-right: 20px;
+          }
           button {
             border: none;
             background: linear-gradient(90deg, #ff4b2b, #ff416c);

@@ -105,7 +105,7 @@ export default {
     },
     openVideoPlayer (item) {
       this.$router.push({
-        path: '/videoDeatils',
+        path: '/videoDetails',
         query: { id: item.id }
       })
     }

@@ -19,7 +19,7 @@
         </el-col>
         <el-col :span="3" class="btn">
           <el-button :class="query.order==='hot'?'active':''" size="mini" @click="getPopularPlaylist">热门</el-button>
-          <el-button size="mini" :class="query.order==='new'?'active':''" @click="getTheLatestPlaylist">最新</el-button>
+          <el-button :class="query.order==='new'?'active':''" size="mini" @click="getTheLatestPlaylist">最新</el-button>
         </el-col>
       </el-row>
       <!-- 全部歌单标签 -->
@@ -53,8 +53,8 @@
       <el-main>
         <!-- 精品歌单标签列表 -->
         <section class="playlist container">
-          <ul class="list" v-if="!$store.state.loading">
-            <li v-for="(item,i) in boutiquePlaylist" :key="i" @click="openSonglist(item)">
+          <ul v-if="!$store.state.loading" class="list">
+            <li v-for="(item,i) in boutiquePlaylist" :key="i" @click="openSongDeatils(item)">
               <img :src="item.coverImgUrl" alt="">
               <span><i class="el-icon-caret-right"></i> {{ item.playCount }}</span>
               <h1>{{ item.name }}</h1>
@@ -63,13 +63,13 @@
           <Loading v-else></Loading>
         </section>
         <!-- 分页 -->
-        <section class="pagination" v-if="total>49">
+        <section v-if="total>49" class="pagination">
           <el-pagination
-              @current-change="handleCurrentChange"
               :page-size="query.limit"
+              :total=total
               background
               layout="total, prev, pager, next, jumper"
-              :total=total>
+              @current-change="handleCurrentChange">
           </el-pagination>
         </section>
       </el-main>
@@ -82,7 +82,7 @@ import '@/assets/css/common/playlist.less'
 import '@/assets/css/common/pagination.less'
 import Loading from '@/components/common/Loading/Loading'
 import tool from '@/utils/tool'
-import { getSonglistHotSort, getAFeaturedSonglist, getSonglistSort } from '@/API/server/api'
+import { getAFeaturedSonglist, getSonglistHotSort, getSonglistSort } from '@/API/server/api'
 
 export default {
   name: 'SongList',
@@ -123,6 +123,9 @@ export default {
   },
   components: { Loading },
   created () {
+    if (this.$route.query.tag) {
+      this.query.cat = this.$route.query.tag
+    }
     this.getSonglist()
     this.getAllTagList()
   },
@@ -183,7 +186,7 @@ export default {
       this.show = false
       this.getSonglist()
     },
-    openSonglist (item) {
+    openSongDeatils (item) {
       this.$router.push({
         path: '/songDetails',
         query: { id: item.id }

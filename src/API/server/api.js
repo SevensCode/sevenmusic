@@ -186,3 +186,50 @@ export const getSimilarMv = mvid => axios.get('/simi/mv', { params: { mvid } })
  * @param {number} query.commentId - 回复的评论id (回复评论时必填)
  * */
 export const sendDeleteComment = query => axios.get('/comment', { params: query })
+/**
+ * 获取歌手单曲,传入歌手 id, 可获得歌手部分信息和热门歌曲
+ * @method getSingerSingles
+ * @param {number} id - 歌手 id, 可由搜索接口获得
+ * */
+export const getSingerSingles = id => axios.get('/artists', { params: { id } })
+/**
+ * 获取歌手 mv
+ * @method getSingerMv
+ * @param {number} id - 歌手 id, 可由搜索接口获得
+ * */
+export const getSingerMv = id => axios.get('/artist/mv', { params: { id } })
+/**
+ * 获取歌手专辑
+ * @method getSingerAlbum
+ * @param {number} query.id - 歌手 id, 可由搜索接口获得
+ * @param {number} [query.limit] - 取出数量 , 默认为 50
+ * @param {number} [query.offset] - 偏移数量 , 用于分页 , 如 :( 页数 -1)*50, 其中 50 为 limit 的值 , 默认 为 0
+ * */
+export const getSingerAlbum = query => axios.get('/artist/album', { params: query })
+/**
+ * 获取歌手描述
+ * @method getSingerDesc
+ * @param {number} id - 歌手 id
+ * */
+export const getSingerDesc = id => axios.get('/artist/desc', { params: { id } })
+/**
+ * 获取歌手详情
+ * @method getArtistDetails
+ * @param {number} id - 歌手 id
+ * */
+export const getArtistDetails = id => axios.get('/artist/detail', { params: { id } })
+/**
+ * 获取相似歌手
+ * @method getSimilarSingers
+ * @param {number} id - 歌手 id
+ * */
+export const getSimilarSingers = id => axios.get('/simi/artist', { params: { id } })
+/**
+ * 获取歌手全部歌曲
+ * @method getAllTheSongsOfTheSinger
+ * @param {number} query.id - 歌手 id
+ * @param {string} [query.order] - hot ,time 按照热门或者时间排序
+ * @param {string} [query.limit] - 取出歌单数量 , 默认为 50
+ * @param {string} [query.offset] - 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*50, 其中 50 为 limit 的值
+ * */
+export const getAllTheSongsOfTheSinger = query => axios.get('/artist/songs', { params: query })

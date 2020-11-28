@@ -14,11 +14,11 @@
             <span class="name">{{ songlistInfo.playlist.creator.nickname }}</span>
             <span class="time">{{ songlistInfo.playlist.createTime }}创建</span>
           </section>
-          <section class="tag">
+          <section class="tag" v-if="songlistInfo.playlist.tags.length>0">
             <span>标签:</span>
             <ul>
               <li v-for="(item,i) in songlistInfo.playlist.tags" :key="i">
-                <el-tag><span>{{ item }}</span></el-tag>
+                <el-tag><span @click="openSongSort(item)">{{ item }}</span></el-tag>
               </li>
             </ul>
           </section>
@@ -71,7 +71,7 @@
         </el-table-column>
         <el-table-column label="专辑" prop="al.name" show-overflow-tooltip width="135">
           <template slot-scope="scope">
-            <span :class="red(scope.row)">{{ scope.row.al.nmae }}</span>
+            <span :class="red(scope.row)">{{ scope.row.al.name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="时长" prop="dt">
@@ -162,6 +162,7 @@ export default {
         id: this.id,
         cookie: this.cookie
       })
+      // 歌单创建时间格式化
       const date = new Date(res.playlist.createTime)
       const y = date.getFullYear()
       const m = this.tool.formatZero(date.getMonth() + 1)
@@ -236,6 +237,12 @@ export default {
         query: { id: item.id }
       })
       location.reload()
+    },
+    openSongSort (item) {
+      this.$router.push({
+        path: '/songlist',
+        query: { tag: item }
+      })
     }
   }
 }
