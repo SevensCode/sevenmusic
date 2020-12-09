@@ -2,7 +2,7 @@
   <div class="banner">
     <swiper :options="swiperOption" class="container">
       <swiper-slide v-for="item in banners" :key="item.imageUrl" class="bannerImg">
-        <img :src="item.imageUrl" alt="">
+        <img :onerror="defaultImg" :src="item.imageUrl" alt="">
       </swiper-slide>
     </swiper>
     <div slot="pagination" class="swiper-pagination"></div>
@@ -57,6 +57,11 @@ export default {
       const { data: banner } = await getBanner()
       this.banners = banner.banners
       this.$store.commit('hideLoading')
+    }
+  },
+  computed: {
+    defaultImg () {
+      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
     }
   }
 }

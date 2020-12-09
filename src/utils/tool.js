@@ -26,13 +26,13 @@ export default {
   },
   /**
    * @method 格式化日期格式补0
-   * @param {number} date 需要补零的数
+   * @param {number} num 需要补零的数
    * */
-  formatZero (date) {
-    if (date < 10 && date >= 0) {
-      return '0' + date
+  formatZero (num) {
+    if (num < 10 && num >= 0) {
+      return '0' + num
     } else {
-      return date
+      return num
     }
   },
   /**
@@ -75,5 +75,17 @@ export default {
     } else {
       return '刚刚'
     }
+  },
+  /**
+   * 格式年月日
+   * @method formatYearMonthDay()
+   * @param {number} time 指定日期
+   * */
+  formatYearMonthDay (time) {
+    const date = new Date(time)
+    const y = date.getFullYear()
+    const m = this.formatZero(date.getMonth() + 1)
+    const d = this.formatZero(date.getDate())
+    return y + '-' + m + '-' + d
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="musicPlayer">
-    <img :src="$store.state.musicInfo.al.picUrl" alt="">
+    <img :onerror="defaultImg" :src="$store.state.musicInfo.al.picUrl" alt="">
     <section class="songTitleAndAuthor">
       <h2>{{ $store.state.musicInfo.name }}</h2>
       <p>
@@ -55,7 +55,8 @@
         <span class="title">播放列表</span>
         <section class="outer">
           <ul ref="playlist" class="playlist">
-            <li v-for="(item,i) in $store.state.playlist" :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'redli':'li'" :key="i">
+            <li v-for="(item,i) in $store.state.playlist"
+                :key="i" :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'redli':'li'">
               <p class="content">
                 <section :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'hide':'index'">
                   <span v-if="i<9">0{{ i + 1 }}</span>
@@ -66,8 +67,8 @@
                      class="el-icon-video-pause pause" @click="playlistPauseMusic()"></i>
                   <i v-else class="el-icon-video-play play" @click="playlistPlayMusic(item)"></i>
                 </section>
-                <span class="name" v-if="item.song">{{ item.song.name }}</span>
-                <span class="name" v-else>{{ item.name }}</span>
+                <span v-if="item.song" class="name">{{ item.song.name }}</span>
+                <span v-else class="name">{{ item.name }}</span>
               </p>
               <i class="el-icon-close"></i>
             </li>
@@ -190,11 +191,16 @@ export default {
     }
   },
   computed: {
+    // 获取当前歌词Index
     getIndex () {
       return this.$store.state.currentIndex
+    },
+    defaultImg () {
+      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
     }
   },
   watch: {
+    // 监听歌词Index改变
     getIndex: function (val) {
       if (val >= this.$store.state.lyricsTime.length - 5) {
         this.$refs.lyrics.style.top = -this.$store.state.currentLyricsTop + 'px'
@@ -397,6 +403,7 @@ export default {
 
             .playAndPause {
               display: none;
+
               i {
                 color: #FA2800;
                 display: block;
@@ -408,6 +415,7 @@ export default {
             }
           }
         }
+
         .redli {
           display: flex;
           justify-content: space-between;
@@ -418,6 +426,7 @@ export default {
           cursor: pointer;
           user-select: none;
           color: #FA2800;
+
           .content {
             display: flex;
             color: #FA2800;
@@ -440,6 +449,7 @@ export default {
 
             .playAndPause {
               display: none;
+
               i {
                 color: #FA2800;
                 display: block;

@@ -20,9 +20,12 @@ export default new Vuex.Store({
     playOrder: 0, // 歌词
     lyric: '', // 歌词容器dom
     lyricsDom: '', // 歌词时间
-    lyricsTime: [], // 当前歌词高低
+    lyricsTime: [], // 当前歌词高度
     currentLyricsTop: 0,
-    currentIndex: 0
+    // 当前歌词Index
+    currentIndex: 0,
+    // 评论区域是否显示
+    allCommentAreaisShow: false
   },
   mutations: {
     // 显示Loading
@@ -89,6 +92,9 @@ export default new Vuex.Store({
     },
     upDateIndex (state, index) {
       state.currentIndex = index
+    },
+    toggleDisplayOfAllCommentAreas (state) {
+      state.allCommentAreaisShow = !state.allCommentAreaisShow
     }
   },
   actions: {},

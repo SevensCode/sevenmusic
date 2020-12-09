@@ -78,21 +78,23 @@ a {
 
 
 /*.swiper-pagination-bullet-active*/
-.el-slider__bar{
+.el-slider__bar {
     background: #FA2800;
     height: 3px;
 }
-.el-slider__runway{
+
+.el-slider__runway {
     height: 3px;
 }
-.el-slider__button{
-    border:2px solid #FA2800;
+
+.el-slider__button {
+    border: 2px solid #FA2800;
     height: 8px;
     width: 8px;
     margin-bottom: 3px;
 }
 
-.lyricsStyle{
+.lyricsStyle {
     font-size: 14px;
     color: #4a4a4a;
     margin: 10px 0;
@@ -102,7 +104,22 @@ a {
     /*transition: 1s;*/
 }
 
-.lyricsActive{
+.lyricsActive {
     color: #FA2800;
-    transition:color 1s;
+    transition: color 1s;
 }
+
+/*修改分页器的背景和字体颜色*/
+/*::v-deep {*/
+
+.el-pagination.is-background .el-pager li:not(.disabled):hover {
+    /*background-color: #fff;*/ /*进行修改未选中背景和字体*/
+    color: #FA2800;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #FA2800; /* 进行修改选中项背景和字体*/
+    color: #fff;
+}
+
+/*}*/

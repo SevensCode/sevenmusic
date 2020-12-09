@@ -18,54 +18,7 @@
     <main class="container playlist">
       <!-- 单曲区域 -->
       <section v-if="activeIndex===0">
-        <el-table v-if="isShow" :data="single" row-class-name="hoverPlay" stripe style="width: 100%">
-          <el-table-column align="center" label="序号" width="130">
-            <template slot-scope="scope">
-              <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'hide':'index'">
-              <span v-if="scope.row.index>8">
-                {{ scope.row.index }}
-              </span>
-                <span v-else>0{{ scope.row.index }}</span>
-              </div>
-              <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'show':'playAndPause'">
-                <i v-if="$store.state.musicInfo.id===scope.row.id&&$store.state.playing"
-                   class="el-icon-video-pause pause"
-                   @click="pauseMusic()"></i>
-                <i v-else class="el-icon-video-play play" @click="playMusic(scope.row)"></i>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="歌曲" prop="name" show-overflow-tooltip width="514">
-            <template slot-scope="scope">
-              <div class="songmap">
-                <img :src="scope.row.al.picUrl" alt="">
-                <span :class="red(scope.row)">{{ scope.row.name }}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="歌手" show-overflow-tooltip width="300">
-            <template slot-scope="scope">
-            <span v-for="(item,i) in scope.row.ar" :key="i">
-              <span :class="red(scope.row)" v-if="scope.row.ar.length===1">{{ item.name }}</span>
-              <span :class="red(scope.row)" v-else-if="scope.row.ar.length>1">
-                {{ item.name }}
-                <span :class="red(scope.row)" v-if="item.name===scope.row.ar[scope.row.ar.length - 1].name"></span>
-                <span :class="red(scope.row)" v-else>/</span>
-              </span>
-            </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="专辑" prop="al.name" show-overflow-tooltip width="300">
-            <template slot-scope="scope">
-              <span :class="red(scope.row)">{{scope.row.al.name}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="时长" prop="dt">
-            <template slot-scope="scope">
-              <span :class="red(scope.row)">{{scope.row.dt}}</span>
-            </template>
-          </el-table-column>
-        </el-table>
+        <PlayList v-if="isShow" :play-list="single"></PlayList>
         <Loading v-else></Loading>
       </section>
       <!-- 歌手区域 -->
@@ -80,13 +33,7 @@
       </section>
       <!-- 专辑区域 -->
       <section v-if="activeIndex===2" class="playlist">
-        <ul v-if="!$store.state.loading" class="list">
-          <li v-for="(item,i) in album" :key="i">
-            <img :src="item.blurPicUrl" alt="">
-            <span><i class="el-icon-caret-right"></i> {{ item.type }}</span>
-            <h1>{{ item.name }}</h1>
-          </li>
-        </ul>
+        <Album v-if="!$store.state.loading" :album-list="album" :column="6"></Album>
         <Loading v-else></Loading>
       </section>
       <!-- 视频区域 -->
@@ -94,7 +41,7 @@
         <ul v-if="!$store.state.loading" class="video">
           <li v-for="(item,i) in video" :key="i">
             <!-- Mv封面 -->
-            <img :src="item.coverUrl" alt="">
+            <img :onerror="defaultImg" :src="item.coverUrl" alt="">
             <!-- 播放量 -->
             <span class="playVolume"><i class="el-icon-caret-right"></i>{{ item.playTime }}</span>
             <!-- 遮罩 -->
@@ -111,13 +58,7 @@
       </section>
       <!-- 歌单区域 -->
       <section v-if="activeIndex===4" class="playlist">
-        <ul v-if="!$store.state.loading" class="list">
-          <li @click="openSonglist(item)" v-for="(item,i) in songlist" :key="i">
-            <img :src="item.coverImgUrl" alt="">
-            <span><i class="el-icon-caret-right"></i> {{ item.playCount }}</span>
-            <h1>{{ item.name }}</h1>
-          </li>
-        </ul>
+        <SongList v-if="!$store.state.loading" :songlist="songlist" :column="8"></SongList>
         <Loading v-else></Loading>
       </section>
     </main>
@@ -125,15 +66,16 @@
 </template>
 
 <script>
-import '../../assets/css/common/singerList.less'
-import '../../assets/css/common/playlist.less'
 import '../../assets/css/common/video.less'
-import Loading from '@/components/common/Loading/Loading'
+import Loading from '@/components/common/Loading'
 import { search } from '@/API/server/api'
 import { getMusicInfo, lyrics, pauseMusic, playMusic } from '@/utils/playSong'
+import SongList from '@/components/common/SongList'
+import Album from '@/components/common/AlbumList'
+import PlayList from '@/components/common/PlayList'
 
 export default {
-  components: { Loading },
+  components: { PlayList, Album, SongList, Loading },
   data () {
     return {
       tabsList: ['单曲', '歌手', '专辑', '视频', '歌单'],
@@ -167,16 +109,7 @@ export default {
       if (this.queryInfo.keywords.length === 0) {
         return
       }
-      let index = 1
       const { data: res } = await search(this.queryInfo)
-      if (this.queryInfo.type === 1) {
-        res.result.songs.forEach(item => {
-          item.index = index++
-          const mm = this.tool.formatZero(new Date(item.dt).getMinutes())
-          const ss = this.tool.formatZero(new Date(item.dt).getSeconds())
-          item.dt = mm + ':' + ss
-        })
-      }
       this.single = res.result.songs
       this.singer = res.result.artists
       this.album = res.result.albums
@@ -192,13 +125,6 @@ export default {
         })
       }
       this.video = res.result.videos
-      if (this.queryInfo.type === 1000) {
-        res.result.playlists.forEach(item => {
-          // 换算播放量
-          item.playCount = item.playCount.toString().split('')
-          item.playCount = this.tool.formatPlayCount(item.playCount.join(''))
-        })
-      }
       this.songlist = res.result.playlists
       this.isShow = true
     },
@@ -266,6 +192,11 @@ export default {
         path: '/songDetails',
         query: { id: item.id }
       })
+    }
+  },
+  computed: {
+    defaultImg () {
+      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
     }
   }
 }
@@ -365,46 +296,5 @@ main {
       margin-right: 20px;
     }
   }
-}
-
-.hoverPlay {
-  .songmap {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-
-    img {
-      width: 35px;
-      height: 35px;
-      margin-right: 20px;
-    }
-  }
-
-  .playAndPause {
-    display: none;
-    color: #FA2800;
-    cursor: pointer;
-  }
-}
-
-.hoverPlay:hover .index {
-  display: none;
-}
-
-.hoverPlay:hover .playAndPause {
-  display: block;
-}
-
-.hide {
-  display: none;
-}
-
-.show {
-  display: block;
-  color: #FA2800;
-  text-align: center;
-}
-.red {
-    color: #FA2800;
 }
 </style>

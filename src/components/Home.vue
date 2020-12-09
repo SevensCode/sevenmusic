@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import Header from '@/components/common/Header/Header'
-import MusicPlay from '@/components/common/MusicPlay/MusicPlay'
+import Header from '@/components/common/Header'
+import MusicPlay from '@/components/common/MusicPlay'
 
 export default {
   name: 'Home',

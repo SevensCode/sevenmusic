@@ -3,7 +3,7 @@
     <section class="container">
       <el-row class="label">
         <el-col :span="2">
-          <el-button class="allType" @click="show=!show">
+          <el-button class="allType" @click="show = !show">
             <span v-if="query.cat===''">全部</span>
             <span v-else>{{ query.cat }}</span>
             <i class="el-icon-arrow-down"></i>
@@ -12,8 +12,8 @@
         <el-col :span="19" class="tag">
           <span>热门标签：</span>
           <ul>
-            <li v-for="item in popularPlaylist" :key="item.id">
-              <span @click="allTag(item)">{{ item.name }}</span>
+            <li v-for="item in popularPlaylist" :key="item.id+'a'">
+              <span :class="item.name===currenActiveTag?'red':''" @click="allTag(item)">{{ item.name }}</span>
             </li>
           </ul>
         </el-col>
@@ -52,40 +52,27 @@
       <!-- 主内容区域 -->
       <el-main>
         <!-- 精品歌单标签列表 -->
-        <section class="playlist container">
-          <ul v-if="!$store.state.loading" class="list">
-            <li v-for="(item,i) in boutiquePlaylist" :key="i" @click="openSongDeatils(item)">
-              <img :src="item.coverImgUrl" alt="">
-              <span><i class="el-icon-caret-right"></i> {{ item.playCount }}</span>
-              <h1>{{ item.name }}</h1>
-            </li>
-          </ul>
-          <Loading v-else></Loading>
-        </section>
-        <!-- 分页 -->
-        <section v-if="total>49" class="pagination">
-          <el-pagination
-              :page-size="query.limit"
-              :total=total
-              background
-              layout="total, prev, pager, next, jumper"
-              @current-change="handleCurrentChange">
-          </el-pagination>
-        </section>
+        <SongList v-if="!$store.state.loading" :column="8" :songlist="boutiquePlaylist"></SongList>
+        <Loading v-else></Loading>
+        <Pager v-if="total>49" :handle-current-change="handleCurrentChange" :limit="query.limit" :total="total"></Pager>
       </el-main>
     </section>
   </div>
 </template>
 
 <script>
-import '@/assets/css/common/playlist.less'
-import '@/assets/css/common/pagination.less'
-import Loading from '@/components/common/Loading/Loading'
-import tool from '@/utils/tool'
+import Loading from '@/components/common/Loading'
 import { getAFeaturedSonglist, getSonglistHotSort, getSonglistSort } from '@/API/server/api'
+import SongList from '@/components/common/SongList'
+import Pager from '@/components/common/pager'
 
 export default {
-  name: 'SongList',
+  name: 'AllSongList',
+  components: {
+    Pager,
+    Loading,
+    SongList
+  },
   data () {
     return {
       // 热门歌单
@@ -118,16 +105,17 @@ export default {
         order: 'hot',
         // 歌单标签
         cat: ''
-      }
+      },
+      currenActiveTag: ''
     }
   },
-  components: { Loading },
-  created () {
+  async mounted () {
     if (this.$route.query.tag) {
       this.query.cat = this.$route.query.tag
+      this.currenActiveTag = this.$route.query.tag
     }
-    this.getSonglist()
-    this.getAllTagList()
+    await this.getSonglist()
+    await this.getAllTagList()
   },
   methods: {
     async getSonglist () {
@@ -136,10 +124,6 @@ export default {
       this.popularPlaylist = popularPlaylist.tags
       // 精品歌单列表
       const { data: boutiquePlaylist } = await getAFeaturedSonglist(this.query)
-      boutiquePlaylist.playlists.forEach(item => {
-        item.playCount = item.playCount.toString().split('')
-        item.playCount = tool.formatPlayCount(item.playCount.join(''))
-      })
       this.boutiquePlaylist = boutiquePlaylist.playlists
       this.total = boutiquePlaylist.total
     },
@@ -182,15 +166,13 @@ export default {
       this.getSonglist()
     },
     allTag (item) {
+      if (this.currenActiveTag === item.name) {
+        return false
+      }
       this.query.cat = item.name
+      this.currenActiveTag = item.name
       this.show = false
       this.getSonglist()
-    },
-    openSongDeatils (item) {
-      this.$router.push({
-        path: '/songDetails',
-        query: { id: item.id }
-      })
     }
   }
 }
@@ -238,6 +220,10 @@ export default {
       }
 
       li:hover {
+        color: #FA2800;
+      }
+
+      .red {
         color: #FA2800;
       }
     }

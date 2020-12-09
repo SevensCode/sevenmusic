@@ -233,3 +233,12 @@ export const getSimilarSingers = id => axios.get('/simi/artist', { params: { id 
  * @param {string} [query.offset] - 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*50, 其中 50 为 limit 的值
  * */
 export const getAllTheSongsOfTheSinger = query => axios.get('/artist/songs', { params: query })
+/**
+ * 评论点赞
+ * @method commentLike
+ * @param {number} query.id - 资源 id, 如歌曲 id,mv id
+ * @param {number} query.cid - 评论 id
+ * @param {number} query.t - 是否点赞 ,1 为点赞 ,0 为取消点赞
+ * @param {number} query.type - 0: 歌曲 1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频 6: 动态
+ * */
+export const commentLike = query => axios.get('/comment/like', { params: query })

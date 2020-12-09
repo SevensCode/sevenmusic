@@ -16,26 +16,23 @@
         {{ item.name }}
       </li>
     </ul>
-    <ul class="singerList" v-if="!$store.state.loading">
-      <li v-for="item in singerList" :key="item.id">
-        <img :src="item.img1v1Url" alt="">
-        <h2>{{ item.name }}</h2>
-        <p>单曲数:{{ item.musicSize }}</p>
-      </li>
-    </ul>
+    <Singer :column="10" :singer-list="singerList" v-if="!$store.state.loading"></Singer>
     <Loading v-else></Loading>
   </div>
 </template>
 
 <script>
 import '@/assets/css/common/Tag.less'
-import '@/assets/css/common/singerList.less'
-import Loading from '@/components/common/Loading/Loading'
+import Loading from '@/components/common/Loading'
 import { getSingerSortList } from '@/API/server/api'
+import Singer from '@/components/common/Singer'
 
 export default {
-  name: 'Singer',
-  components: { Loading },
+  name: 'SingerPage',
+  components: {
+    Loading,
+    Singer
+  },
   data () {
     return {
       query: {

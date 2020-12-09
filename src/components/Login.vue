@@ -3,10 +3,10 @@
     <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login-form">
       <p>登录</p>
       <el-form-item prop="phone">
-        <el-input v-model="loginForm.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
+        <el-input v-model="loginForm.phone" placeholder="请输入手机号" prefix-icon="el-icon-user"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input show-password v-model="loginForm.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+        <el-input v-model="loginForm.password" placeholder="请输入密码" prefix-icon="el-icon-lock" show-password></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary">注册</el-button>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { loginByPhone, getUserInfo } from '@/API/server/userApi'
+import { getUserInfo, loginByPhone } from '@/API/server/userApi'
 
 export default {
   data () {
@@ -67,6 +67,9 @@ export default {
         // 保存用户信息
         window.sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
         this.$message.success('登录成功')
+        if (window.sessionStorage.getItem('recording')) {
+          return await this.$router.push(window.sessionStorage.getItem('recording'))
+        }
         await this.$router.push('/home')
       })
     }

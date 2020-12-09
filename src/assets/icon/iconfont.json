@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18051529",
+      "name": "点赞",
+      "font_class": "thumbsup",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
       "icon_id": "14005427",
       "name": "收 藏",
       "font_class": "shoucang",
@@ -193,27 +200,6 @@
       "font_class": "fengge1",
       "unicode": "e614",
       "unicode_decimal": 58900
-    },
-    {
-      "icon_id": "17829080",
-      "name": "star",
-      "font_class": "star",
-      "unicode": "e60a",
-      "unicode_decimal": 58890
-    },
-    {
-      "icon_id": "17829095",
-      "name": "heart",
-      "font_class": "heart",
-      "unicode": "e60c",
-      "unicode_decimal": 58892
-    },
-    {
-      "icon_id": "17829116",
-      "name": "fabulous",
-      "font_class": "fabulous",
-      "unicode": "e615",
-      "unicode_decimal": 58901
     },
     {
       "icon_id": "5158719",

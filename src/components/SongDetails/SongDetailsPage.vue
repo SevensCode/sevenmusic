@@ -5,16 +5,16 @@
       <!-- 歌单信息 -->
       <header>
         <section class="songImg">
-          <img :src="songlistInfo.playlist.coverImgUrl" alt="">
+          <img :onerror="defaultImg" :src="songlistInfo.playlist.coverImgUrl" alt="">
         </section>
         <section class="info">
           <h1 class="title">{{ songlistInfo.playlist.name }}</h1>
           <section class="user">
-            <img :src="songlistInfo.playlist.creator.avatarUrl" alt="">
+            <img :onerror="defaultImg" :src="songlistInfo.playlist.creator.avatarUrl" alt="">
             <span class="name">{{ songlistInfo.playlist.creator.nickname }}</span>
             <span class="time">{{ songlistInfo.playlist.createTime }}创建</span>
           </section>
-          <section class="tag" v-if="songlistInfo.playlist.tags.length>0">
+          <section v-if="songlistInfo.playlist.tags.length>0" class="tag">
             <span>标签:</span>
             <ul>
               <li v-for="(item,i) in songlistInfo.playlist.tags" :key="i">
@@ -27,59 +27,24 @@
         </section>
       </header>
       <!-- 按钮收藏区域 -->
-      <section class="butAndKeep">
-        <el-button class="all" @click="playAll"><i class="iconfont icon-bofang1"></i>播放全部</el-button>
-        <el-button class="keep"><i class="iconfont icon-zan"></i>收藏</el-button>
-      </section>
+      <transition mode="out-in" name="btn">
+        <section v-if="!$store.state.allCommentAreaisShow" :key="transitionKey.a" class="butAndKeep">
+          <el-button class="all" @click="playAll"><i class="iconfont icon-bofang1"></i>播放全部
+          </el-button>
+          <el-button class="keep"><i class="iconfont icon-zan"></i>收藏</el-button>
+        </section>
+        <section v-else :key="transitionKey.b" class="viewSongList">
+          <el-button @click="$store.commit('toggleDisplayOfAllCommentAreas')">歌曲列表</el-button>
+        </section>
+      </transition>
       <!-- 歌曲列表 -->
-      <el-table :data="songlist" row-class-name="hoverPlay" stripe style="width: 100%">
-        <el-table-column align="center" class-name="" label="序号" width="100">
-          <template slot-scope="scope">
-            <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'hide':'index'">
-              <span v-if="scope.row.index>8" :class="red(scope.row)">
-                {{ scope.row.index }}
-              </span>
-              <span v-else :class="red(scope.row)">0{{ scope.row.index }}</span>
-            </div>
-            <div :class="$store.state.musicInfo.id===scope.row.id&&$store.state.playing?'show':'playAndPause'">
-              <i v-if="$store.state.musicInfo.id===scope.row.id&&$store.state.playing" class="el-icon-video-pause pause"
-                 @click="pauseMusic()"></i>
-              <i v-else class="el-icon-video-play play" @click="playMusic(scope.row)"></i>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="歌曲" prop="name" width="360">
-          <template slot-scope="scope">
-            <div class="songmap">
-              <img :src="scope.row.al.picUrl" alt="">
-              <span :class="red(scope.row)">{{ scope.row.name }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="歌手" width="225">
-          <template slot-scope="scope">
-            <span v-for="(item,i) in scope.row.ar" :key="i">
-              <span v-if="scope.row.ar.length===1"
-                    :class="red(scope.row)">{{ item.name }}</span>
-              <span v-else-if="scope.row.ar.length>1" :class="red(scope.row)">
-                {{ item.name }}
-                <span v-if="item.name===scope.row.ar[scope.row.ar.length - 1].name" :class="red(scope.row)"></span>
-                <span v-else :class="red(scope.row)">/</span>
-              </span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="专辑" prop="al.name" show-overflow-tooltip width="135">
-          <template slot-scope="scope">
-            <span :class="red(scope.row)">{{ scope.row.al.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="时长" prop="dt">
-          <template slot-scope="scope">
-            <span :class="red(scope.row)">{{ scope.row.dt }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+      <transition name="show">
+        <PlayList v-if="!$store.state.allCommentAreaisShow" :play-list="songlist"></PlayList>
+      </transition>
+      <transition name="show">
+        <Comment v-if="$store.state.allCommentAreaisShow" :comment-list="allComment" :get-comment-list="playlistReviews"
+                 :query="songlistQuery" :type="2"></Comment>
+      </transition>
     </el-card>
     <!-- 其他 -->
     <section>
@@ -87,16 +52,18 @@
       <el-card class="other">
         <span class="bar"></span>
         <span class="title">喜欢这个歌单的人</span>
-        <section class="collectorUser">
-          <img v-for="(item,i)  in subscribers" :key="i" :src="item.avatarUrl" :title="item.nickname" alt=""/>
+        <section v-if="subscribers.length>0" class="collectorUser">
+          <img v-for="(item,i)  in subscribers" :key="i" :onerror="defaultImg" :src="item.avatarUrl"
+               :title="item.nickname" alt=""/>
         </section>
+        <p v-else class="nolike">还没有被人喜欢！</p>
       </el-card>
       <!-- 相关推荐 -->
       <el-card class="other">
         <span class="bar"></span>
         <span class="title">相关推荐</span>
         <section v-for="(item,i) in relatedSuggestion" :key="i" class="relatedSuggestion" @click="openSonglist(item)">
-          <img :src="item.coverImgUrl" alt="">
+          <img :onerror="defaultImg" :src="item.coverImgUrl" alt="">
           <section class="content">
             <h3 class="suo1">{{ item.name }}</h3>
             <p class="suo1">By.{{ item.creator.nickname }}</p>
@@ -104,27 +71,33 @@
         </section>
       </el-card>
       <!-- 最近评论 -->
-      <el-card class="other">
-        <span class="bar"></span>
-        <span class="title">最近评论</span>
-        <section v-for="(item,i) in recentComments" :key="i" class="recentComments">
-          <img :src="item.user.avatarUrl" alt="">
-          <div class="content">
-            <section>
-              <h3 class="suo1">{{ item.user.nickname }}</h3>
-              <span>{{ item.time }}</span>
+      <transition name="show">
+        <el-card v-if="!$store.state.allCommentAreaisShow" class="other">
+          <span class="bar"></span>
+          <span class="title">最近评论</span>
+          <span class="allComment" @click="$store.commit('toggleDisplayOfAllCommentAreas')">{{ recentComments.length > 0 ? '全部评论' : '去评论' }} ></span>
+          <section v-if="recentComments.length>0">
+            <section v-for="(item,i) in recentComments" :key="i" class="recentComments">
+              <img :onerror="defaultImg" :src="item.user.avatarUrl" alt="">
+              <div class="content">
+                <section>
+                  <h3 class="suo1">{{ item.user.nickname }}</h3>
+                  <span>{{ item.time | howLongHasItBeenSinceLastTime }}</span>
+                </section>
+                <p>{{ item.content }}</p>
+              </div>
             </section>
-            <p>{{ item.content }}</p>
-          </div>
-        </section>
-      </el-card>
+          </section>
+          <section v-else class="noComment">还没有评论哦~</section>
+        </el-card>
+      </transition>
     </section>
   </div>
   <Loading v-else></Loading>
 </template>
 
 <script>
-import Loading from '@/components/common/Loading/Loading'
+import Loading from '@/components/common/Loading'
 import {
   getPalylistDetails,
   getPlaylistCollector,
@@ -132,28 +105,55 @@ import {
   getRelatedPlaylistRecommendations,
   getSongDetails
 } from '@/API/server/api'
-import { getMusicInfo, lyrics, pauseMusic, playMusic } from '@/utils/playSong'
+import { getMusicInfo, lyrics, playMusic } from '@/utils/playSong'
+import PlayList from '@/components/common/PlayList'
+import Comment from '@/components/common/comment'
 
 export default {
   name: 'SongDetails',
-  components: { Loading },
+  components: {
+    Comment,
+    PlayList,
+    Loading
+  },
   data () {
     return {
-      songlistInfo: {}, // 歌单推荐
+      // 歌单信息
+      songlistInfo: {},
+      // 歌单id
       id: this.$route.query.id,
-      cookie: window.sessionStorage.getItem('cookie'), // 歌曲列表
-      songlist: [], // 收藏者列表
-      subscribers: [], // 相关推荐列表
-      relatedSuggestion: [], // 最近评论列表
+      cookie: window.sessionStorage.getItem('cookie'),
+      // 歌曲列表
+      songlist: [],
+      // 收藏者列表
+      subscribers: [],
+      // 相关推荐列表
+      relatedSuggestion: [],
+      // 最近评论列表
       recentComments: [],
-      isShow: false
+      allComment: [],
+      isShow: false,
+      // 歌单查询参数
+      songlistQuery: {
+        id: this.$route.query.id,
+        limit: 20,
+        offset: 0,
+        before: 0
+      },
+      // 全部评论区域是否显示
+      // allCommentAreaisShow: false,
+      transitionKey: {
+        a: 1,
+        b: 2
+      }
     }
   },
-  created () {
-    this.getSongDetails()
-    this.getPlaylistCollector()
-    this.getRelatedSongRecommendations()
-    this.playlistReviews()
+  async mounted () {
+    await this.getSongDetails()
+    await this.getPlaylistCollector()
+    await this.getRelatedSongRecommendations()
+    await this.playlistReviews()
+    this.isShow = true
   },
   methods: {
     async getSongDetails () {
@@ -163,11 +163,7 @@ export default {
         cookie: this.cookie
       })
       // 歌单创建时间格式化
-      const date = new Date(res.playlist.createTime)
-      const y = date.getFullYear()
-      const m = this.tool.formatZero(date.getMonth() + 1)
-      const d = this.tool.formatZero(date.getDate())
-      res.playlist.createTime = y + '-' + m + '-' + d
+      res.playlist.createTime = this.tool.formatYearMonthDay(res.playlist.createTime)
       this.songlistInfo = res
       const songlistId = []
       // 获取全部歌曲的id
@@ -175,16 +171,8 @@ export default {
         songlistId.push(item.id)
       })
       // 获取全部歌曲
-      let index = 1
       const { data: songlist } = await getSongDetails(songlistId.join(','))
-      songlist.songs.forEach(item => {
-        item.index = index++
-        const mm = this.tool.formatZero(new Date(item.dt).getMinutes())
-        const ss = this.tool.formatZero(new Date(item.dt).getSeconds())
-        item.dt = mm + ':' + ss
-      })
       this.songlist = songlist.songs
-      this.isShow = true
     }, // 获取歌单收藏者
     async getPlaylistCollector () {
       const { data: res } = await getPlaylistCollector({
@@ -198,28 +186,10 @@ export default {
       this.relatedSuggestion = res.playlists
     }, // 歌单评论列表
     async playlistReviews () {
-      const { data: res } = await getPlaylistComments({ id: this.id })
-      res.comments.forEach(item => {
-        item.time = this.tool.getDistanceSpecifiedTime(item.time)
-      })
+      const { data: res } = await getPlaylistComments(this.songlistQuery)
       this.recentComments = res.comments
-    },
-    async playMusic (item) {
-      // 获取歌单列表
-      this.$store.commit('getPlaylist', this.songlist)
-      // 获取歌曲信息
-      await getMusicInfo(item.id)
-      await lyrics()
-      // 改变状态 播放中
-      this.$store.commit('playing')
-      // 播放
-      await playMusic()
-    }, // 暂停
-    pauseMusic () {
-      // 改变播放状态
-      this.$store.commit('pause')
-      // 暂停
-      pauseMusic()
+      console.log(res)
+      this.allComment = res
     },
     async playAll () {
       this.$store.commit('getPlaylist', this.songlist)
@@ -227,9 +197,6 @@ export default {
       await lyrics()
       this.$store.commit('playing')
       await playMusic()
-    },
-    red (item) {
-      return this.$store.state.musicInfo.id === item.id && this.$store.state.playing ? 'red' : ''
     },
     openSonglist (item) {
       this.$router.push({
@@ -243,6 +210,19 @@ export default {
         path: '/songlist',
         query: { tag: item }
       })
+    }
+    // // 显示全部评论
+    // showAllComment () {
+    //   this.allCommentAreaisShow = true
+    // },
+    // // 显示歌曲列表
+    // viewSonglist () {
+    //   this.allCommentAreaisShow = false
+    // }
+  },
+  computed: {
+    defaultImg () {
+      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
     }
   }
 }
@@ -331,7 +311,7 @@ export default {
 
       .tag {
         display: flex;
-        margin: 10px 0;
+        //margin: 10px 0;
         justify-content: left;
         align-items: center;
 
@@ -410,42 +390,21 @@ export default {
     }
   }
 
-  .hoverPlay {
-    .songmap {
-      display: flex;
-      justify-content: left;
-      align-items: center;
+  .viewSongList {
+    width: 100%;
+    margin-bottom: 20px;
+    height: 60px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 
-      img {
-        width: 35px;
-        height: 35px;
-        margin-right: 20px;
-      }
+    .el-button {
+      background: #FA2800;
+      color: white;
+      border: none;
+      outline: none;
+      border-radius: 15px;
     }
-
-    .playAndPause {
-      display: none;
-      color: #FA2800;
-      cursor: pointer;
-    }
-  }
-
-  .hoverPlay:hover .index {
-    display: none;
-  }
-
-  .hoverPlay:hover .playAndPause {
-    display: block;
-  }
-
-  .hide {
-    display: none;
-  }
-
-  .show {
-    display: block;
-    color: #FA2800;
-    text-align: center;
   }
 
   .other {
@@ -454,6 +413,14 @@ export default {
     .title {
       font-size: 14px;
       color: #404040;
+      font-weight: 1000;
+    }
+
+    .allComment {
+      float: right;
+      font-size: 13px;
+      color: #FA2800;
+      cursor: pointer;
       font-weight: 1000;
     }
 
@@ -472,7 +439,14 @@ export default {
         cursor: pointer;
       }
     }
-
+    .nolike{
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: #FA2800;
+      font-weight: 1000;
+    }
     .relatedSuggestion {
       display: flex;
       justify-content: space-between;
@@ -563,10 +537,33 @@ export default {
         }
       }
     }
+
+    .noComment {
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: #FA2800;
+      font-weight: 1000;
+    }
   }
 }
 
-.red {
-  color: #FA2800;
+.show-enter-active, .show-leave-active {
+  transition: .5s;
+}
+
+.show-enter, .show-leave-to {
+  opacity: 0;
+  transform: translateY(100px);
+}
+
+.btn-enter-active, .btn-leave-active {
+  transition: .3s;
+}
+
+.btn-enter, .btn-leave-to {
+  opacity: 0;
+  transform: translateX(100px);
 }
 </style>

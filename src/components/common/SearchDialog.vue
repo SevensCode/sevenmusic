@@ -126,7 +126,7 @@ export default {
     .search {
       height: 200px;
       width: 100%;
-      background-image: url("../../../assets/img/personal.jpg");
+      background-image: url("../../assets/img/personal.jpg");
       background-position: top center;
       background-size: cover;
       display: flex;

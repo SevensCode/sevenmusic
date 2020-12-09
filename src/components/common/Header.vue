@@ -5,7 +5,7 @@
         <el-col :span="4">
           <!-- Logo区域 -->
           <section class="logo">
-            <img alt="sevenmusic" height="43" src="../../../assets/img/logo.png" width="43"/>
+            <img alt="sevenmusic" height="43" src="../../assets/img/logo.png" width="43"/>
             <span>SevenMusic</span>
           </section>
         </el-col>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import SearchDialog from '@/components/common/SearchDialog/SearchDialog'
+import SearchDialog from '@/components/common/SearchDialog'
 
 export default {
   name: 'Header',
