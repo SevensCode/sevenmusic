@@ -23,12 +23,7 @@
       </section>
       <!-- 歌手区域 -->
       <section v-if="activeIndex===1" class="singer">
-        <ul v-if="!$store.state.loading" class="singerList">
-          <li v-for="item in singer" :key="item.id">
-            <img :src="item.img1v1Url" alt="">
-            <h2>{{ item.name }}</h2>
-          </li>
-        </ul>
+       <singer v-if="!$store.state.loading" :singer-list="singer" :column="8"></singer>
         <Loading v-else></Loading>
       </section>
       <!-- 专辑区域 -->
@@ -73,9 +68,10 @@ import { getMusicInfo, lyrics, pauseMusic, playMusic } from '@/utils/playSong'
 import SongList from '@/components/common/SongList'
 import Album from '@/components/common/AlbumList'
 import PlayList from '@/components/common/PlayList'
+import Singer from '@/components/common/Singer'
 
 export default {
-  components: { PlayList, Album, SongList, Loading },
+  components: { Singer, PlayList, Album, SongList, Loading },
   data () {
     return {
       tabsList: ['单曲', '歌手', '专辑', '视频', '歌单'],

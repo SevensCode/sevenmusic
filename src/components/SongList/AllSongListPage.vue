@@ -1,5 +1,5 @@
 <template>
-  <div class="gen">
+  <div>
     <section class="container">
       <el-row class="label">
         <el-col :span="2">
@@ -54,8 +54,8 @@
         <!-- 精品歌单标签列表 -->
         <SongList v-if="!$store.state.loading" :column="8" :songlist="boutiquePlaylist"></SongList>
         <Loading v-else></Loading>
-        <Pager v-if="total>49" :handle-current-change="handleCurrentChange" :limit="query.limit" :total="total"></Pager>
       </el-main>
+      <Pager v-if="total>49" :handle-current-change="handleCurrentChange" :limit="query.limit" :total="total"></Pager>
     </section>
   </div>
 </template>
@@ -98,7 +98,7 @@ export default {
       total: 10,
       query: {
         // 每页显示条数
-        limit: 64,
+        limit: 24,
         // 当前页码
         offset: 0,
         // 默认为热门歌单
@@ -153,7 +153,7 @@ export default {
       })
     },
     handleCurrentChange (newPage) {
-      this.query.offset = (newPage - 1) * 49
+      this.query.offset = (newPage - 1) * this.query.limit
       this.getSonglist()
     },
     getPopularPlaylist () {
@@ -289,7 +289,8 @@ export default {
 .el-main {
   padding: 0;
   margin-top: 20px;
-  //height: 1612px;
-  //overflow: hidden;
+  height: 600px;
+  background: white;
+  overflow: hidden;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <div class="newSong-list" ref="newSong">
-    <section v-for="item in newSong" :key="item.id" class="newSong-item">
+  <div ref="newSong" class="newSong-list">
+    <section v-for="(item,i) in newSong" :key="item.id" class="newSong-item">
       <section class="play">
         <span :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'hide':'playlist-index'">{{
-            item.index | formatZero
+            i+1 | formatZero
           }}</span>
         <span :class="$store.state.musicInfo.id===item.id&&$store.state.playing?'hide':'playlist-play'">
           <i class="el-icon-video-play" @click="playMusic(item)"></i>
@@ -48,17 +48,7 @@ export default {
   data () {
     return {}
   },
-  mounted () {
-    this.init()
-  },
   methods: {
-    init () {
-      let index = 1
-      this.newSong.forEach(item => {
-        item.index = index
-        index++
-      })
-    },
     async playMusic (item) {
       // 获取歌单列表
       this.$store.commit('getPlaylist', this.newSong)
@@ -100,13 +90,6 @@ export default {
     }
   },
   watch: {
-    newSong: (value) => {
-      let index = 1
-      value.forEach(item => {
-        item.index = index
-        index++
-      })
-    },
     column: function () {
       this.$refs.newSong.style.gridTemplateColumns = 'repeat(' + this.column + ', 660px)'
     }
@@ -125,6 +108,7 @@ export default {
   margin-top: 20px;
   padding: 0 8px;
   margin-bottom: 20px;
+
   .newSong-item {
     height: 80px;
     border-radius: 3px;
@@ -178,7 +162,9 @@ export default {
 
     .playTime {
       width: 100px;
-      text-align: center;
+      text-align: right;
+      color: #4a4a4a;
+      font-size: 14px;
     }
   }
 }

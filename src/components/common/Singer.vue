@@ -3,7 +3,7 @@
     <section v-for="item in singerList" :key="item.id" class="singer-item">
       <img :onerror="defaultImg" :src="item.img1v1Url" alt="" @click="openSingerDetails(item.id)">
       <h1 class="singer-name suo1">{{ item.name }}</h1>
-      <p class="singer-singleCount">单曲数 {{ item.musicSize }}</p>
+      <p v-if="item.musicSize" class="singer-singleCount">单曲数 {{ item.musicSize }}</p>
     </section>
   </div>
 </template>
@@ -17,6 +17,13 @@ export default {
   },
   methods: {
     openSingerDetails (id) {
+      if (window.location.hash.slice(0, 15) === '#/singerDetails') {
+        this.$router.push({
+          path: '/singerDetails',
+          query: { id }
+        })
+        return location.reload()
+      }
       this.$router.push({
         path: '/singerDetails',
         query: { id }
@@ -57,11 +64,6 @@ export default {
       height: 108px;
       border-radius: 100%;
       cursor: pointer;
-      transition: 1s;
-    }
-
-    img:hover {
-      transform: scale(1.1);
     }
 
     .singer-name {

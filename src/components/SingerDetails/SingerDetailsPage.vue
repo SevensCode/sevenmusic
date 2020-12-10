@@ -27,15 +27,16 @@
           }}</span>
       </section>
       <section v-if="defaultActive===0" class="singleSore">
-        <span :class="hotAndTimeActive===0?'active':''" @click="hotSong">热门</span>
+        <span :class="hotAndTimeActive===0?'active':''" @click="hotSong">热门50首</span>
         <div></div>
         <span :class="hotAndTimeActive===1?'active':''" @click="timeSong">时间</span>
         <el-button @click="playAll">播放全部</el-button>
       </section>
       <section v-if="defaultActive===0" class="singleList">
-        <PlayList v-if="!$store.state.loading" :play-list="songlist"></PlayList>
+        <PlayList v-if="!$store.state.loading" :play-list="hotAndTimeActive===0?hotSonglist:songlist"></PlayList>
         <Loading v-else></Loading>
-        <pager :handle-current-change="handleCurrentChange" :limit="songListQuery.limit" :total="songlistTotal"></pager>
+        <pager v-if="hotAndTimeActive!==0" :handle-current-change="handleCurrentChange"
+               :limit="songListQuery.limit" :total="songlistTotal"></pager>
       </section>
       <section v-show="defaultActive===1" class="albumList">
         <Album :album-list="albumList" :column="6"></Album>
@@ -57,7 +58,8 @@ import {
   getSimilarSingers,
   getSingerAlbum,
   getSingerMv,
-  getSingerSingles
+  getSingerSingles,
+  getSingerTop50Songs
 } from '@/API/server/api'
 import { getMusicInfo, lyrics, playMusic } from '@/utils/playSong'
 import Loading from '@/components/common/Loading'
@@ -84,6 +86,7 @@ export default {
       // 歌手描述
       singerDesc: '',
       songlist: [],
+      hotSonglist: [],
       songlistTotal: 0,
       menuList: ['单曲', '专辑', 'MV', '相似歌手'],
       // 导航栏默认激活
@@ -93,8 +96,8 @@ export default {
       // 歌曲查询参数
       songListQuery: {
         id: this.$route.query.id,
-        order: 'hot',
-        limit: 20,
+        order: 'time',
+        limit: 51,
         offset: 0
       },
       // 专辑查询参数
@@ -113,6 +116,7 @@ export default {
   async mounted () {
     await this.getSingerAllInfo()
     await this.getSonglist()
+    await this.getTop50Songs()
     await this.getAlbum()
     await this.getMv()
     await this.getSimilarSingers()
@@ -124,11 +128,16 @@ export default {
       const { data: singerSingles } = await getSingerSingles(this.id)
       this.singerDesc = singerSingles.artist
     },
-    // 获取歌曲
+    // 获取全部歌曲
     async getSonglist () {
-      const { data: hotSongs } = await getAllTheSongsOfTheSinger(this.songListQuery)
-      this.songlist = hotSongs.songs
-      this.songlistTotal = hotSongs.total
+      const { data: allSongs } = await getAllTheSongsOfTheSinger(this.songListQuery)
+      this.songlist = allSongs.songs
+      this.songlistTotal = allSongs.total
+      console.log(allSongs)
+    },
+    async getTop50Songs () {
+      const { data: hotSongs } = await getSingerTop50Songs(this.id)
+      this.hotSonglist = hotSongs.songs
     },
     // 获取专辑
     async getAlbum () {
@@ -144,7 +153,6 @@ export default {
     async getSimilarSingers () {
       const { data: similarSingers } = await getSimilarSingers(this.id)
       this.similarSingers = similarSingers.artists
-      console.log(similarSingers)
     },
     // 导航激活
     navSwitch (i) {
@@ -152,16 +160,12 @@ export default {
     },
     // 热门歌曲
     hotSong () {
-      this.songListQuery.order = 'hot'
       this.hotAndTimeActive = 0
-      this.songListQuery.offset = 0
-      this.getSonglist()
+      this.getTop50Songs()
     },
     // 按时间排序的歌曲
     timeSong () {
-      this.songListQuery.order = 'time'
       this.hotAndTimeActive = 1
-      this.songListQuery.offset = 0
       this.getSonglist()
     },
     // 播放全部
@@ -174,7 +178,7 @@ export default {
     },
     // 分页器
     handleCurrentChange (newPage) {
-      this.songListQuery.offset = (newPage - 1) * 50
+      this.songListQuery.offset = (newPage - 1) * this.songListQuery.limit
       this.getSonglist()
     }
   },

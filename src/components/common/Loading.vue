@@ -19,9 +19,9 @@ export default {
   i {
     padding: 10px;
     font-size: 40px;
-    color: #11c0fa;
+    color: #FA2800;
     margin-bottom: 60px;
-    animation: loading 0.8s ease-in-out infinite;
+    animation: loading 1s ease-in-out infinite;
   }
 }
 
@@ -30,7 +30,7 @@ export default {
     transform: rotateZ(0deg);
   }
   from {
-    transform: rotateZ(-360deg);
+    transform: rotateZ(-720deg);
   }
 }
 </style>

@@ -14,8 +14,8 @@
         </section>
         <section class="info">
           <p>等级：<i class="iconfont icon-dengji"></i><span>{{ userInfo.level }}</span></p>
-          <p>年龄：</p>
-          <p>地区：</p>
+          <p>年龄：-</p>
+          <p>地区：-</p>
         </section>
         <section class="activity">
           <section>
@@ -61,15 +61,17 @@
             <span class="bar"></span>
             <span>我创建的歌单</span>
           </header>
-          <SongList :column="2" :songlist="myCreateSongList"></SongList>
+          <SongList v-if="myCreateSongList.length<1" :column="2" :songlist="myCreateSongList"></SongList>
+          <p class="noSonglist" v-else>什么都没有哦~</p>
         </el-card>
         <!--我收藏的歌单列表-->
         <el-card class="myCreateSongList fu">
           <header>
             <span class="bar"></span>
-            <span>我创建的歌单</span>
+            <span>我收藏的歌单</span>
           </header>
-          <SongList :column="2" :songlist="myKeepSongList"></SongList>
+          <SongList v-if="myKeepSongList.length<1" :column="2" :songlist="myKeepSongList"></SongList>
+          <p class="noSonglist" v-else>什么都没有哦~</p>
         </el-card>
       </section>
     </section>
@@ -84,7 +86,7 @@ import SongList from '@/components/common/SongList'
 import PlayList from '@/components/common/PlayList'
 
 export default {
-  name: 'User',
+  name: 'LoginUserDetails',
   components: {
     PlayList,
     SongList,
@@ -112,7 +114,7 @@ export default {
       isShow: false
     }
   },
-  created () {
+  mounted () {
     this.getrankingList()
     this.getMyCreateSongList()
   },
@@ -441,26 +443,11 @@ export default {
     }
   }
 }
-
-.hoverPlay:hover .index {
-  display: none;
-}
-
-.hoverPlay:hover .playAndPause {
-  display: block;
-}
-
-.hide {
-  display: none;
-}
-
-.show {
-  display: block;
-  color: #FA2800;
+.noSonglist{
   text-align: center;
-}
-
-.red {
+  width: 100%;
+  margin-top: 20px;
   color: #FA2800;
+  font-size: 14px;
 }
 </style>

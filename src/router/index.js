@@ -8,11 +8,12 @@ const Leaderboard = () => import('@/components/Leaderboard/LeaderboardPage')
 const SongList = () => import('@/components/SongList/AllSongListPage')
 const Singer = () => import('@/components/Singer/SingerPage')
 const Mv = () => import('@/components/MV/MvPage')
-const User = () => import('@/components/User/User')
+const User = () => import('@/components/User/LoginUserDetails')
 const Search = () => import('@/components/Serach/SearchPage')
 const SongDetails = () => import('@/components/SongDetails/SongDetailsPage')
 const VideoDetails = () => import('@/components/Video/MvDeatils')
 const SingerDetails = () => import('@/components/SingerDetails/SingerDetailsPage')
+const AccessUserDetails = () => import('@/components/User/AccessUserDetails')
 Vue.use(VueRouter)
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = VueRouter.prototype.push
@@ -59,9 +60,9 @@ const router = new VueRouter({
         path: '/mv',
         component: Mv
       },
-      // 用户页
+      // 登录的用户页
       {
-        path: '/user',
+        path: '/loginUserDetails',
         component: User
       },
       // 搜索页
@@ -83,6 +84,11 @@ const router = new VueRouter({
       {
         path: '/singerDetails',
         component: SingerDetails
+      },
+      // 访问的用户详情页
+      {
+        path: '/accessUserDetails',
+        component: AccessUserDetails
       }
     ]
   }]

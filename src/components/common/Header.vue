@@ -26,14 +26,14 @@
             <el-button v-show="noLogin" type="text" @click="login">登录</el-button>
             <!-- 头像 -->
             <el-avatar v-show="hasLogin" :src="user.profile.avatarUrl"></el-avatar>
-            <el-dropdown v-show="hasLogin" style="margin-left: 20px" trigger="click" @command="handleCommand">
+            <el-dropdown v-show="hasLogin" style="margin-left: 20px;" trigger="click" @command="handleCommand">
                   <span class="el-dropdown-link">
                     {{ user.profile.nickname }}
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
-                  <router-link to="/user"><i
+                  <router-link to="/loginUserDetails"><i
                       class="iconfont icon-yonghu"></i>个人中心
                   </router-link>
                 </el-dropdown-item>
@@ -88,6 +88,7 @@ export default {
   methods: {
     // 跳转到登录页面
     login () {
+      window.sessionStorage.setItem('recording', location.hash.slice(1))
       this.$router.push('/login')
     },
     // 下拉菜单触发的事件

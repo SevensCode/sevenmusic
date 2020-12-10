@@ -229,10 +229,16 @@ export const getSimilarSingers = id => axios.get('/simi/artist', { params: { id 
  * @method getAllTheSongsOfTheSinger
  * @param {number} query.id - 歌手 id
  * @param {string} [query.order] - hot ,time 按照热门或者时间排序
- * @param {string} [query.limit] - 取出歌单数量 , 默认为 50
- * @param {string} [query.offset] - 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*50, 其中 50 为 limit 的值
+ * @param {number} [query.limit] - 取出歌单数量 , 默认为 50
+ * @param {number} [query.offset] - 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*50, 其中 50 为 limit 的值
  * */
 export const getAllTheSongsOfTheSinger = query => axios.get('/artist/songs', { params: query })
+/**
+ * 歌手热门50首歌曲
+ * @method getSingerTop50Songs
+ * @param {number} id - 歌手 id
+ * */
+export const getSingerTop50Songs = id => axios.get('/artist/top/song', { params: { id } })
 /**
  * 评论点赞
  * @method commentLike

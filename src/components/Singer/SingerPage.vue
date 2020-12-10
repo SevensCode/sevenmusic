@@ -16,8 +16,10 @@
         {{ item.name }}
       </li>
     </ul>
+    <section class="box">
     <Singer :column="10" :singer-list="singerList" v-if="!$store.state.loading"></Singer>
     <Loading v-else></Loading>
+    </section>
   </div>
 </template>
 
@@ -138,5 +140,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.box{
+  height: 628px;
+}
 </style>

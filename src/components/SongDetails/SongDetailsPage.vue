@@ -11,7 +11,9 @@
           <h1 class="title">{{ songlistInfo.playlist.name }}</h1>
           <section class="user">
             <img :onerror="defaultImg" :src="songlistInfo.playlist.creator.avatarUrl" alt="">
-            <span class="name">{{ songlistInfo.playlist.creator.nickname }}</span>
+            <span class="name"
+                  @click="openUserInfo(songlistInfo.playlist.creator.userId)">{{ songlistInfo.playlist.creator.nickname
+              }}</span>
             <span class="time">{{ songlistInfo.playlist.createTime }}创建</span>
           </section>
           <section v-if="songlistInfo.playlist.tags.length>0" class="tag">
@@ -54,7 +56,8 @@
         <span class="title">喜欢这个歌单的人</span>
         <section v-if="subscribers.length>0" class="collectorUser">
           <img v-for="(item,i)  in subscribers" :key="i" :onerror="defaultImg" :src="item.avatarUrl"
-               :title="item.nickname" alt=""/>
+               :title="item.nickname"
+               alt="" @click="openUserInfo(item.userId)"/>
         </section>
         <p v-else class="nolike">还没有被人喜欢！</p>
       </el-card>
@@ -62,11 +65,11 @@
       <el-card class="other">
         <span class="bar"></span>
         <span class="title">相关推荐</span>
-        <section v-for="(item,i) in relatedSuggestion" :key="i" class="relatedSuggestion" @click="openSonglist(item)">
-          <img :onerror="defaultImg" :src="item.coverImgUrl" alt="">
+        <section v-for="(item,i) in relatedSuggestion" :key="i" class="relatedSuggestion">
+          <img :onerror="defaultImg" :src="item.coverImgUrl" alt="" @click="openSonglist(item)">
           <section class="content">
-            <h3 class="suo1">{{ item.name }}</h3>
-            <p class="suo1">By.{{ item.creator.nickname }}</p>
+            <h3 class="suo1" @click="openSonglist(item)">{{ item.name }}</h3>
+            <p class="suo1" @click="openUserInfo(item.creator.userId)">By.{{ item.creator.nickname }}</p>
           </section>
         </section>
       </el-card>
@@ -75,13 +78,15 @@
         <el-card v-if="!$store.state.allCommentAreaisShow" class="other">
           <span class="bar"></span>
           <span class="title">最近评论</span>
-          <span class="allComment" @click="$store.commit('toggleDisplayOfAllCommentAreas')">{{ recentComments.length > 0 ? '全部评论' : '去评论' }} ></span>
+          <span class="allComment"
+                @click="$store.commit('toggleDisplayOfAllCommentAreas')">{{ recentComments.length > 0 ? '全部评论' : '去评论'
+            }} ></span>
           <section v-if="recentComments.length>0">
             <section v-for="(item,i) in recentComments" :key="i" class="recentComments">
-              <img :onerror="defaultImg" :src="item.user.avatarUrl" alt="">
+              <img @click="openUserInfo(item.user.userId)" :onerror="defaultImg" :src="item.user.avatarUrl" alt="">
               <div class="content">
                 <section>
-                  <h3 class="suo1">{{ item.user.nickname }}</h3>
+                  <h3 @click="openUserInfo(item.user.userId)" class="suo1">{{ item.user.nickname }}</h3>
                   <span>{{ item.time | howLongHasItBeenSinceLastTime }}</span>
                 </section>
                 <p>{{ item.content }}</p>
@@ -210,15 +215,13 @@ export default {
         path: '/songlist',
         query: { tag: item }
       })
+    },
+    openUserInfo (userId) {
+      this.$router.push({
+        path: '/accessUserDetails',
+        query: { id: userId }
+      })
     }
-    // // 显示全部评论
-    // showAllComment () {
-    //   this.allCommentAreaisShow = true
-    // },
-    // // 显示歌曲列表
-    // viewSonglist () {
-    //   this.allCommentAreaisShow = false
-    // }
   },
   computed: {
     defaultImg () {
@@ -439,7 +442,8 @@ export default {
         cursor: pointer;
       }
     }
-    .nolike{
+
+    .nolike {
       width: 100%;
       text-align: center;
       font-size: 14px;
@@ -447,6 +451,7 @@ export default {
       color: #FA2800;
       font-weight: 1000;
     }
+
     .relatedSuggestion {
       display: flex;
       justify-content: space-between;
@@ -481,6 +486,11 @@ export default {
         p {
           color: #a5a5c1;
           font-size: 12px;
+          cursor: pointer;
+        }
+
+        p:hover {
+          color: #FA2800;
         }
       }
     }
