@@ -289,7 +289,7 @@ export default {
 .el-main {
   padding: 0;
   margin-top: 20px;
-  height: 600px;
+  height: 620px;
   background: white;
   overflow: hidden;
 }

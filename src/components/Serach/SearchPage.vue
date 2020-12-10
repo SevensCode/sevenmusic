@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- 搜索区域 -->
-    <section class="bj">
+    <section :class="queryInfo.keywords.length>1?'bj':'bjlc'">
       <el-input v-model="queryInfo.keywords" placeholder="请输入音乐/MV/歌单/歌手" type="text" @input="search">
         <i slot="suffix" class="el-icon-search search"></i>
       </el-input>
     </section>
     <!-- tab标签栏 -->
-    <section class="container searchTab">
+    <section v-if="queryInfo.keywords.length>1" class="container searchTab">
       <h1>搜索结果</h1>
       <span v-for="(item,i) in tabsList" :key="i" :class="activeIndex===i?'active':''" @click="tabs(i)">{{
           item
@@ -15,7 +15,7 @@
       <el-button v-if="activeIndex===0" @click="playAll"><i class="iconfont icon-bofang1"></i>播放全部</el-button>
     </section>
     <!-- 主内容区域 -->
-    <main class="container playlist">
+    <main v-if="queryInfo.keywords.length>1" class="container">
       <!-- 单曲区域 -->
       <section v-if="activeIndex===0">
         <PlayList v-if="isShow" :play-list="single"></PlayList>
@@ -23,7 +23,7 @@
       </section>
       <!-- 歌手区域 -->
       <section v-if="activeIndex===1" class="singer">
-       <singer v-if="!$store.state.loading" :singer-list="singer" :column="8"></singer>
+        <singer v-if="!$store.state.loading" :column="8" :singer-list="singer"></singer>
         <Loading v-else></Loading>
       </section>
       <!-- 专辑区域 -->
@@ -53,7 +53,7 @@
       </section>
       <!-- 歌单区域 -->
       <section v-if="activeIndex===4" class="playlist">
-        <SongList v-if="!$store.state.loading" :songlist="songlist" :column="8"></SongList>
+        <SongList v-if="!$store.state.loading" :column="8" :songlist="songlist"></SongList>
         <Loading v-else></Loading>
       </section>
     </main>
@@ -71,7 +71,13 @@ import PlayList from '@/components/common/PlayList'
 import Singer from '@/components/common/Singer'
 
 export default {
-  components: { Singer, PlayList, Album, SongList, Loading },
+  components: {
+    Singer,
+    PlayList,
+    Album,
+    SongList,
+    Loading
+  },
   data () {
     return {
       tabsList: ['单曲', '歌手', '专辑', '视频', '歌单'],
@@ -199,7 +205,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.bj {
+.bj, .bjlc {
   width: 100%;
   height: 250px;
   background-image: url("../../assets/img/personal.jpg");
@@ -210,6 +216,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
+  transition: 1s;
 
   .el-input {
     width: 600px;
@@ -225,7 +232,7 @@ export default {
   }
 }
 
-.bj::before {
+.bj::before, .bjcl::before {
   content: '';
   display: block;
   width: 100%;
@@ -234,6 +241,10 @@ export default {
   left: 0;
   top: 0;
   background: rgba(188, 27, 27, 0.2);
+}
+
+.bjlc {
+  height: 650px;
 }
 
 .searchTab {

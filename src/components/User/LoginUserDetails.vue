@@ -61,7 +61,7 @@
             <span class="bar"></span>
             <span>我创建的歌单</span>
           </header>
-          <SongList v-if="myCreateSongList.length<1" :column="2" :songlist="myCreateSongList"></SongList>
+          <SongList v-if="myCreateSongList.length!==0" :column="2" :songlist="myCreateSongList"></SongList>
           <p class="noSonglist" v-else>什么都没有哦~</p>
         </el-card>
         <!--我收藏的歌单列表-->
@@ -70,7 +70,7 @@
             <span class="bar"></span>
             <span>我收藏的歌单</span>
           </header>
-          <SongList v-if="myKeepSongList.length<1" :column="2" :songlist="myKeepSongList"></SongList>
+          <SongList v-if="myKeepSongList.length!==0" :column="2" :songlist="myKeepSongList"></SongList>
           <p class="noSonglist" v-else>什么都没有哦~</p>
         </el-card>
       </section>
@@ -449,5 +449,6 @@ export default {
   margin-top: 20px;
   color: #FA2800;
   font-size: 14px;
+  font-weight: 1000;
 }
 </style>

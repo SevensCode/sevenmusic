@@ -34,7 +34,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
                   <router-link to="/loginUserDetails"><i
-                      class="iconfont icon-yonghu"></i>个人中心
+                      class="iconfont icon-yonghu"></i>个人主页
                   </router-link>
                 </el-dropdown-item>
                 <el-dropdown-item>
@@ -215,11 +215,11 @@ export default {
 }
 
 .slide-fade-enter-active, .slide-fade-leave-active {
-  transition: all 0.5s;
+  transition: 0.2s ease-in-out;
 }
 
 .slide-fade-enter, .slide-fade-leave-to {
-  opacity: .5;
-  transform: translateY(100%);
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>

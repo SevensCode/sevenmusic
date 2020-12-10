@@ -1,6 +1,6 @@
 <template>
-    <div class="searchDialog">
-      <div @click="$store.commit('hideSearchDialog')"></div>
+  <div class="searchDialog">
+    <div @click="$store.commit('hideSearchDialog')"></div>
       <section class="rong">
         <section class="search">
           <label>
@@ -26,7 +26,7 @@
           </header>
         </section>
       </section>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -44,7 +44,7 @@ export default {
       searchHistoryList: []
     }
   },
-  created () {
+  mounted () {
     this.getHotSearchList()
     if (window.localStorage.getItem('searchHistoryList')) {
       this.searchHistoryList = window.localStorage.getItem('searchHistoryList').split(',')
@@ -84,9 +84,17 @@ export default {
         this.searchHistoryList.push(keywords)
         window.localStorage.setItem('searchHistoryList', this.searchHistoryList)
         window.sessionStorage.setItem('search', keywords)
+        if (window.location.hash.slice(1) === '/search') {
+          this.$router.push('/search')
+          location.reload()
+        }
         this.$router.push('/search')
       } else {
         window.sessionStorage.setItem('search', keywords)
+        if (window.location.hash.slice(1) === '/search') {
+          this.$router.push('/search')
+          location.reload()
+        }
         this.$router.push('/search')
       }
     }
@@ -102,11 +110,11 @@ export default {
   left: 0;
   top: 0;
   z-index: 1000;
-  background: rgba(120, 129, 147, .22);
+  background: rgba(255, 255, 255, .12);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
-
   div {
     width: 100%;
     height: 100%;
@@ -209,18 +217,5 @@ export default {
   top: 0;
   filter: blur(15px); /*为了模糊更明显，调高模糊度*/
   z-index: 10001;
-}
-
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
-
-.slide-fade-leave-active {
-  //transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-
-.slide-fade-enter, .slide-fade-leave-to .slide-fade-leave-active {
-  transition: all 1s;
-  transform: translateY(10px);
 }
 </style>

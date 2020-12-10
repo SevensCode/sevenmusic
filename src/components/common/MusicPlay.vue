@@ -2,14 +2,14 @@
   <div class="musicPlayer">
     <img :onerror="defaultImg" :src="$store.state.musicInfo.al.picUrl" alt="">
     <section class="songTitleAndAuthor">
-      <h2>{{ $store.state.musicInfo.name }}</h2>
-      <p>
+      <h2 class="suo1">{{ $store.state.musicInfo.name }}</h2>
+      <p class="suo1" >
         <span v-for="(item,i) in $store.state.musicInfo.ar" :key="i">
-          <span v-if="$store.state.musicInfo.ar.length===1">{{ item.name }}</span>
-          <span v-else-if="$store.state.musicInfo.ar.length>1">
+          <span class="playlist-author" v-if="$store.state.musicInfo.ar.length===1" @click="openSingerDetails(item.id)">{{ item.name }}</span>
+          <span class="playlist-author" v-else-if="$store.state.musicInfo.ar.length>1" @click="openSingerDetails(item.id)" >
             {{ item.name }}
             <span v-if="item.name===$store.state.musicInfo.ar[$store.state.musicInfo.ar.length - 1].name"></span>
-            <span v-else>/</span>
+            <strong v-else class="playlist-author">/</strong>
           </span>
         </span>
       </p>
@@ -188,6 +188,19 @@ export default {
       this.$store.commit('pause')
       // 暂停
       pauseMusic()
+    },
+    openSingerDetails (id) {
+      if (window.location.hash.slice(0, 15) === '#/singerDetails') {
+        this.$router.push({
+          path: '/singerDetails',
+          query: { id }
+        })
+        return location.reload()
+      }
+      this.$router.push({
+        path: '/singerDetails',
+        query: { id }
+      })
     }
   },
   computed: {
@@ -486,7 +499,14 @@ export default {
     }
   }
 }
+.playlist-author:hover {
+  color: #FA2800;
+  cursor: pointer;
+}
 
+.playlist-author:hover strong {
+  color: #4a4a4a;
+}
 .lyrics-enter-active, .lyrics-leave-active {
   transition: all 1s;
 }

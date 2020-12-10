@@ -33,8 +33,7 @@
         <el-button @click="playAll">播放全部</el-button>
       </section>
       <section v-if="defaultActive===0" class="singleList">
-        <PlayList v-if="!$store.state.loading" :play-list="hotAndTimeActive===0?hotSonglist:songlist"></PlayList>
-        <Loading v-else></Loading>
+        <PlayList :play-list="hotAndTimeActive===0?hotSonglist:songlist"></PlayList>
         <pager v-if="hotAndTimeActive!==0" :handle-current-change="handleCurrentChange"
                :limit="songListQuery.limit" :total="songlistTotal"></pager>
       </section>
@@ -97,7 +96,7 @@ export default {
       songListQuery: {
         id: this.$route.query.id,
         order: 'time',
-        limit: 51,
+        limit: 15,
         offset: 0
       },
       // 专辑查询参数
@@ -177,9 +176,9 @@ export default {
       await playMusic()
     },
     // 分页器
-    handleCurrentChange (newPage) {
+    async handleCurrentChange (newPage) {
       this.songListQuery.offset = (newPage - 1) * this.songListQuery.limit
-      this.getSonglist()
+      await this.getSonglist()
     }
   },
   computed: {
@@ -315,5 +314,8 @@ export default {
       font-weight: 1000;
     }
   }
+}
+.singleList{
+  height: 800px;
 }
 </style>

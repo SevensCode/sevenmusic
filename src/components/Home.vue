@@ -7,7 +7,7 @@
       <router-view></router-view>
     </main>
     <!-- 底部 -->
-    <footer class="footer">
+    <footer v-if="!$store.state.loading" class="footer">
       <div>
         <p><span>SevenMusic</span></p>
         <p class="content">sevenmusic</p>
