@@ -14,6 +14,7 @@ const SongDetails = () => import('@/components/SongDetails/SongDetailsPage')
 const VideoDetails = () => import('@/components/Video/MvDeatils')
 const SingerDetails = () => import('@/components/SingerDetails/SingerDetailsPage')
 const AccessUserDetails = () => import('@/components/User/AccessUserDetails')
+const Video = () => import('@/components/VideoPage/VideoList')
 Vue.use(VueRouter)
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = VueRouter.prototype.push
@@ -89,6 +90,11 @@ const router = new VueRouter({
       {
         path: '/accessUserDetails',
         component: AccessUserDetails
+      },
+      // 视频页面
+      {
+        path: '/video',
+        component: Video
       }
     ]
   }]
@@ -99,8 +105,12 @@ router.beforeEach((to, from, next) => {
   // to 代表将要访问路径
   // from 代表从那个路径跳转而来
   // next 是一个函数，表示放行
-  if (to.path === '/user') {
-    if (window.sessionStorage.getItem('userInfo') && window.sessionStorage.getItem('token')) {
+  if (to.path === '/video') {
+    vm.$message.error('不可访问')
+    return next('/find')
+  }
+  if (to.path === '/user' || to.path === '/video') {
+    if (window.sessionStorage.getItem('userInfo') && window.sessionStorage.getItem('token') && window.sessionStorage.getItem('cookie')) {
       return next()
     } else {
       vm.$message.error('请登录')

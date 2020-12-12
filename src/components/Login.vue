@@ -66,6 +66,7 @@ export default {
         const { data: userInfo } = await getUserInfo(user.profile.userId)
         // 保存用户信息
         window.sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
+        this.$store.commit('signedIn')
         this.$message.success('登录成功')
         if (window.sessionStorage.getItem('recording')) {
           return await this.$router.push(window.sessionStorage.getItem('recording'))
@@ -77,7 +78,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .login {
   width: 100vw;
   height: 100vh;

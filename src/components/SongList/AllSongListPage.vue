@@ -224,7 +224,10 @@ export default {
       }
 
       .red {
-        color: #FA2800;
+        color: #fa2800;
+        background: rgba(250,40,0,0.1);
+        border-radius: 15px;
+        padding: 5px 10px;
       }
     }
   }

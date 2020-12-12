@@ -27,5 +27,8 @@ module.exports = {
           quality: 75
         }
       })
+  },
+  css: {
+    extract: false
   }
 }

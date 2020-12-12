@@ -106,7 +106,7 @@ export default {
   align-items: center;
   border-radius: 3px;
   margin-top: 20px;
-  padding: 0 8px;
+  //padding: 0 8px;
   margin-bottom: 20px;
 
   .newSong-item {

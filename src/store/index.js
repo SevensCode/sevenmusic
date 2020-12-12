@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    isLogin: false,
     loading: false,
     // 搜索对话框
     searchDialog: false,
@@ -116,17 +117,29 @@ export default new Vuex.Store({
     getLyricsTime (state, time) {
       state.lyricsTime = time
     },
+    // 修改歌词的高度
     editCurrentLyricsTop (state, top) {
       state.currentLyricsTop = top
     },
+    // 当前歌词的高度
     currentLyricsTopZero (state) {
       state.currentLyricsTop = 0
     },
+    // 更新歌词的Index
     upDateIndex (state, index) {
       state.currentIndex = index
     },
+    // 切换所有评论区域的显示
     toggleDisplayOfAllCommentAreas (state) {
       state.allCommentAreaisShow = !state.allCommentAreaisShow
+    },
+    // 登录了
+    signedIn (state) {
+      state.isLogin = true
+    },
+    // 退出登录
+    signOut (state) {
+      state.isLogin = false
     }
   },
   actions: {},

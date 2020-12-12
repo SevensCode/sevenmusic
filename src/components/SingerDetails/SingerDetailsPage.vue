@@ -315,7 +315,4 @@ export default {
     }
   }
 }
-.singleList{
-  height: 800px;
-}
 </style>

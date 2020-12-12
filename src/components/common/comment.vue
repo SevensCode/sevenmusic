@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section v-if="userInfo&&showUserCommentArea" class="userComment">
+    <section v-if="$store.state.isLogin&&showUserCommentArea" class="userComment">
       <section class="userComment-header">
         <p><i class="el-icon-user"></i><span>{{ userInfo.profile.nickname }}</span>，你好！</p>
       </section>
@@ -14,7 +14,7 @@
         <button @click="postComments">评论</button>
       </section>
     </section>
-    <p v-else-if="!userInfo" class="notLoggedIn">
+    <p v-else-if="!$store.state.isLogin" class="notLoggedIn">
       <a @click="login">登录</a>
       后可以评论！
     </p>
@@ -192,6 +192,7 @@ export default {
     },
     // 显示回复评论区域，隐藏用户评论区域
     showReplyCommentArea (item) {
+      if (!this.$store.state.isLogin) return false
       this.commentAndReplyQuery.commentId = item.commentId
       this.showUserCommentArea = false
     },
@@ -235,7 +236,6 @@ export default {
     },
     // 登录
     login () {
-      console.log()
       window.sessionStorage.setItem('recording', location.hash.slice(1))
       this.$router.push('/login')
     }

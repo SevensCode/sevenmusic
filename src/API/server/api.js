@@ -248,3 +248,27 @@ export const getSingerTop50Songs = id => axios.get('/artist/top/song', { params:
  * @param {number} query.type - 0: 歌曲 1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频 6: 动态
  * */
 export const commentLike = query => axios.get('/comment/like', { params: query })
+
+/**
+ * 获取视频标签列表
+ * @method getAListOfVideoTags
+ * */
+export const getAListOfVideoTags = () => axios.get('/video/group/list')
+/**
+ * 获取视频分类列表
+ * @method getAListOfVideoCategories
+ * */
+export const getAListOfVideoCategories = (query) => axios.get('/video/category/list', { params: query })
+/**
+ * 获取视频标签/分类下的视频 调用此接口 , 传入标签/分类id,可获取到相关的视频,分页参数只能传入offset
+ * @method getRelatedVideoList
+ * @param {number} query.id - videoGroup 的 id
+ * @param {number} [query.offset] - 默认0
+ * */
+export const getRelatedVideoList = (query) => axios.get('/video/group', { params: query })
+/**
+ * 获取全部视频列表
+ * @method getAllVideoList
+ * @param {number} [query.offset] - 默认0
+ * */
+export const getAllVideoList = (query) => axios.get('/video/timeline/all', { params: query })

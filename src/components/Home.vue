@@ -11,8 +11,6 @@
       <div>
         <p><span>SevenMusic</span></p>
         <p class="content">sevenmusic</p>
-        <i>1</i>
-        <i>2</i>
       </div>
     </footer>
     <!--返回顶部 -->

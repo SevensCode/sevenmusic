@@ -5,7 +5,7 @@
         <el-col :span="4">
           <!-- Logo区域 -->
           <section class="logo">
-            <img alt="sevenmusic" height="43" src="../../assets/img/logo.png" width="43"/>
+            <img alt="sevenmusic" src="../../assets/img/logo.png"/>
             <span>SevenMusic</span>
           </section>
         </el-col>
@@ -23,10 +23,11 @@
           <section class="searchAndLogin">
             <i class="el-icon-search" @click="showSearchDialog"></i>
             <div class="line"></div>
-            <el-button v-show="noLogin" type="text" @click="login">登录</el-button>
+            <el-button v-show="!$store.state.isLogin" type="text" @click="login">登录</el-button>
             <!-- 头像 -->
-            <el-avatar v-show="hasLogin" :src="user.profile.avatarUrl"></el-avatar>
-            <el-dropdown v-show="hasLogin" style="margin-left: 20px;" trigger="click" @command="handleCommand">
+            <el-avatar v-show="$store.state.isLogin" :src="user.profile.avatarUrl"></el-avatar>
+            <el-dropdown v-show="$store.state.isLogin" style="margin-left: 20px;" trigger="click"
+                         @command="handleCommand">
                   <span class="el-dropdown-link">
                     {{ user.profile.nickname }}
                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -65,23 +66,12 @@ export default {
   components: { 'search-dialog': SearchDialog },
   data () {
     return {
-      // 没登录
-      noLogin: true,
-      // 登录了
-      hasLogin: false,
       // 用户的信息
-      user: {
-        profile: {
-          avatarUrl: '../assets/img/logo.png',
-          nickname: '默认'
-        }
-      }
+      user: {}
     }
   },
   created () {
     if (window.sessionStorage.getItem('userInfo')) {
-      this.noLogin = false
-      this.hasLogin = true
       this.user = JSON.parse(window.sessionStorage.getItem('userInfo'))
     }
   },
@@ -98,16 +88,15 @@ export default {
         window.sessionStorage.removeItem('userInfo')
         window.sessionStorage.removeItem('token')
         window.sessionStorage.removeItem('cookie')
-        this.noLogin = true
-        this.hasLogin = false
-        if (window.location.hash === '#/user') {
+        if (window.location.hash === '#/user' || window.location.hash === '#/video') {
           return this.$router.push('/find')
         }
-        location.reload()
+        this.$store.commit('signOut')
       }
     },
     showSearchDialog () {
       this.$store.commit('showSearchDialog')
+      // console.log()
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isShow" class="container">
+  <div v-if="isShow" class="container box">
     <div class="banner">
       <swiper :options="swiperOption">
         <swiper-slide v-for="item in banners" :key="item.imageUrl" class="bannerImg">
@@ -120,6 +120,9 @@ export default {
 </script>
 
 <style lang="less">
+.box{
+  padding: 0 5px;
+}
 .title {
   font-size: 16px;
   font-weight: 1000;

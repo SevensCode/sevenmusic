@@ -114,7 +114,7 @@ export const lyrics = async () => {
   console.log(lyrics)
   if (lyrics.klyric && lyrics.lrc) {
     // 原歌词
-    const Olyrics = lyrics.lrc.lyric.split(/\[.*?\]/).filter(value => !!value)
+    const Olyrics = lyrics.lrc.lyric.split(/\[.*?]/).filter(value => !!value)
     store.commit('getLyricsTime', lyrics.lrc.lyric.match(/\d{2,}?:\d{2}/g))
     lyricsBox.innerHTML = ''
     Olyrics.forEach((item) => {
