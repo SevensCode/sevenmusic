@@ -1,20 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Login = () => import('@/components/Login')
-const Home = () => import('@/components/Home')
-const Find = () => import('@/components/Find/FindPage')
-const Leaderboard = () => import('@/components/Leaderboard/LeaderboardPage')
-const SongList = () => import('@/components/SongList/AllSongListPage')
-const Singer = () => import('@/components/Singer/SingerPage')
-const Mv = () => import('@/components/MV/MvPage')
-const User = () => import('@/components/User/LoginUserDetails')
-const Search = () => import('@/components/Serach/SearchPage')
-const SongDetails = () => import('@/components/SongDetails/SongDetailsPage')
-const VideoDetails = () => import('@/components/Video/MvDeatils')
-const SingerDetails = () => import('@/components/SingerDetails/SingerDetailsPage')
-const AccessUserDetails = () => import('@/components/User/AccessUserDetails')
-const Video = () => import('@/components/VideoPage/VideoList')
+const Login = () => import(/* webpackChunkName:"user" */ '@/components/User/Login')
+const Home = () => import(/* webpackChunkName:"home" */ '@/components/Home')
+const Find = () => import(/* webpackChunkName:"find" */ '@/components/Find/FindPage')
+const Leaderboard = () => import(/* webpackChunkName:"leaderboard" */ '@/components/Leaderboard/LeaderboardPage')
+const SongList = () => import(/* webpackChunkName:"songlist" */ '@/components/SongList/AllSongListPage')
+const Singer = () => import(/* webpackChunkName:"singer" */ '@/components/Singer/SingerPage')
+const Mv = () => import(/* webpackChunkName:"mv" */ '@/components/MV/MvPage')
+const User = () => import(/* webpackChunkName:"user" */ '@/components/User/LoginUserDetails')
+const Search = () => import(/* webpackChunkName:"search" */ '@/components/Serach/SearchPage')
+const SongDetails = () => import(/* webpackChunkName:"details" */ '@/components/SongDetails/SongDetailsPage')
+const VideoDetails = () => import(/* webpackChunkName:"details" */ '@/components/Video/MvDeatils')
+const SingerDetails = () => import(/* webpackChunkName:"details" */ '@/components/SingerDetails/SingerDetailsPage')
+const AccessUserDetails = () => import(/* webpackChunkName:"user" */ '@/components/User/AccessUserDetails')
+const Video = () => import(/* webpackChunkName:"video" */ '@/components/VideoPage/VideoList')
+const Register = () => import(/* webpackChunkName:"user" */ '@/components/User/Register')
 Vue.use(VueRouter)
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = VueRouter.prototype.push
@@ -32,6 +33,9 @@ const router = new VueRouter({
   }, {
     path: '/login',
     component: Login
+  }, {
+    path: '/register',
+    component: Register
   }, {
     path: '/home',
     component: Home,

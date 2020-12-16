@@ -5,12 +5,11 @@
         <el-col :span="4">
           <!-- Logo区域 -->
           <section class="logo">
-            <img alt="sevenmusic" src="../../assets/img/logo.png"/>
-            <span>SevenMusic</span>
+            <img alt="sevenmusic" src="../../assets/img/musicLogo.png"/>
           </section>
         </el-col>
         <!-- 导航栏区域 -->
-        <el-col :span="16" class="menu">
+        <el-col :span="14" class="menu">
           <router-link :to="{path:'/find'}" active-class="active">发现音乐</router-link>
           <router-link :to="{path:'/leaderboard'}" active-class="active">排行榜</router-link>
           <router-link :to="{path:'/songList'}" active-class="active">歌单</router-link>
@@ -18,15 +17,15 @@
           <router-link :to="{path:'/video'}" active-class="active">视频</router-link>
           <router-link :to="{path:'/mv'}" active-class="active">MV</router-link>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <!-- 搜索登录区域 -->
           <section class="searchAndLogin">
             <i class="el-icon-search" @click="showSearchDialog"></i>
             <div class="line"></div>
-            <el-button v-show="!$store.state.isLogin" type="text" @click="login">登录</el-button>
+            <el-button v-if="!$store.state.isLogin" type="text" @click="login">登录</el-button>
             <!-- 头像 -->
-            <el-avatar v-show="$store.state.isLogin" :src="user.profile.avatarUrl"></el-avatar>
-            <el-dropdown v-show="$store.state.isLogin" style="margin-left: 20px;" trigger="click"
+            <el-avatar v-if="$store.state.isLogin" :src="user.profile.avatarUrl"></el-avatar>
+            <el-dropdown v-if="$store.state.isLogin" style="margin-left: 20px;" trigger="click"
                          @command="handleCommand">
                   <span class="el-dropdown-link">
                     {{ user.profile.nickname }}
@@ -52,7 +51,7 @@
         </el-col>
       </el-row>
     </section>
-    <transition name="slide-fade">
+    <transition name="search">
       <search-dialog v-show="$store.state.searchDialog"></search-dialog>
     </transition>
   </el-card>
@@ -67,12 +66,15 @@ export default {
   data () {
     return {
       // 用户的信息
-      user: {}
+      user: null
     }
   },
-  created () {
+  mounted () {
     if (window.sessionStorage.getItem('userInfo')) {
       this.user = JSON.parse(window.sessionStorage.getItem('userInfo'))
+      this.$store.commit('signedIn')
+    } else {
+      this.$store.commit('signOut')
     }
   },
   methods: {
@@ -88,15 +90,14 @@ export default {
         window.sessionStorage.removeItem('userInfo')
         window.sessionStorage.removeItem('token')
         window.sessionStorage.removeItem('cookie')
+        this.$store.commit('signOut')
         if (window.location.hash === '#/user' || window.location.hash === '#/video') {
           return this.$router.push('/find')
         }
-        this.$store.commit('signOut')
       }
     },
     showSearchDialog () {
       this.$store.commit('showSearchDialog')
-      // console.log()
     }
   }
 }
@@ -113,54 +114,36 @@ export default {
   top: 0;
   z-index: 100;
   user-select: none;
-
   .el-row {
     padding: 0 20px;
+    height: 100%;
   }
-
   .logo {
-    font-size: 20px;
-    height: inherit;
+    height: 70px;
     position: relative;
-    float: left;
+    text-align: center;
     display: flex;
-    align-items: center;
     justify-content: center;
-    cursor: pointer;
-
-    img {
-      width: 30px;
-      height: 30px;
-    }
-
-    span {
-      height: 70px;
-      line-height: 70px;
-      position: relative;
-      margin-left: 5px;
-      font-weight: 1000;
-      user-select: none;
+    align-items: center;
+    img{
+      cursor: pointer;
     }
   }
-
   .menu {
     display: flex;
     justify-content: left;
     align-items: center;
     height: 70px;
     font-size: 14px;
-
     a {
       margin: 0 20px;
       line-height: 30px;
       position: relative;
     }
   }
-
   .active {
     color: #FA2800;
   }
-
   .active::after {
     display: block;
     content: '';
@@ -173,41 +156,34 @@ export default {
     background: #FA2800;
     margin-left: -2.5px;
   }
-
   .searchAndLogin {
     height: 70px;
     display: flex;
     justify-content: center;
     align-items: center;
     float: right;
-
     i {
       cursor: pointer;
       font-size: 18px;
     }
-
     .line {
       margin: 0 20px;
       border-left: 1px #e1e1e1 solid;
       height: 22px;
     }
-
     .el-button {
       color: #4a4a4a;
       font-size: 14px;
     }
-
     .el-button:hover {
       color: #FA2800;
     }
   }
 }
-
-.slide-fade-enter-active, .slide-fade-leave-active {
-  transition: 0.2s ease-in-out;
+.search-enter-active, .search-leave-active {
+  transition: all 0.5s ease-in-out;
 }
-
-.slide-fade-enter, .slide-fade-leave-to {
+.search-enter, .search-leave-to {
   opacity: 0;
   transform: translateY(20px);
 }

@@ -13,7 +13,7 @@
     </section>
     <SongList :songlist="globalMediaList" :column="8"></SongList>
   </div>
-  <Loading v-else></Loading>
+  <Loading height="650px" v-else></Loading>
 </template>
 
 <script>

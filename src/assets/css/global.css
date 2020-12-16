@@ -32,8 +32,8 @@ a {
 }
 
 .container {
-    height: inherit;
     width: 1380px;
+    height: 100%;
     margin: 20px auto;
     overflow: hidden;
 }
@@ -123,3 +123,12 @@ a {
 }
 
 /*}*/
+.el-backtop{
+    /*width: 50px;*/
+    /*height: 50px;*/
+    background: rgba(0,0,0,0);
+    box-shadow: none;
+}
+.el-backtop:hover{
+    background: rgba(0,0,0,0);
+}

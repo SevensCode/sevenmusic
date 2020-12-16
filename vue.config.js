@@ -1,34 +1,31 @@
 module.exports = {
   chainWebpack: config => {
-    config.module
-      .rule('images')
-      .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
-      .use('image-webpack-loader')
-      .loader('image-webpack-loader')
-      .options({
-        bypassOnDebug: true,
-        disable: true, // webpack@2.x and newer
-        mozjpeg: {
-          progressive: true
-        },
-        // optipng.enabled: false will disable optipng
-        optipng: {
-          enabled: false
-        },
-        pngquant: {
-          quality: [0.65, 0.90],
-          speed: 4
-        },
-        gifsicle: {
-          interlaced: false
-        },
-        // the webp option will enable WEBP
-        webp: {
-          quality: 75
-        }
+    // 发布
+    config.when(process.env.NODE_ENV === 'production', config => {
+      // 通过 config.entry('app') 来霍去病默认打包入口,然后在通过 clear() 清空默认打包入口,再通过 add() 来添加打包入口
+      config.entry('app').clear().add('./src/main-prod.js')
+      config.set('externals', {
+        vue: 'Vue',
+        vuex: 'Vuex',
+        // 'vue-router': 'VueRouter',
+        axios: 'axios',
+        Swiper: 'Swiper',
+        VueLazyload: 'vue-lazyload'
       })
-  },
-  css: {
-    extract: false
+      config.module
+        .rule('images')
+        .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
+        .use('image-webpack-loader')
+        .loader('image-webpack-loader')
+        .options({
+          bypassOnDebug: true
+        })
+        .end()
+    })
+    // 开发
+    config.when(process.env.NODE_ENV === 'development', config => {
+      // 通过 config.entry('app') 来霍去病默认打包入口,然后在通过 clear() 清空默认打包入口,再通过 add() 来添加打包入口
+      config.entry('app').clear().add('./src/main-dev.js')
+    })
   }
 }

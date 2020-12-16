@@ -36,7 +36,7 @@
         <ul v-if="!$store.state.loading" class="video">
           <li v-for="(item,i) in video" :key="i">
             <!-- Mv封面 -->
-            <img :onerror="defaultImg" :src="item.coverUrl" alt="">
+            <img :onerror="defaultImg" :key="i" v-lazy="item.coverUrl" alt="">
             <!-- 播放量 -->
             <span class="playVolume"><i class="el-icon-caret-right"></i>{{ item.playTime }}</span>
             <!-- 遮罩 -->
@@ -198,7 +198,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   }
 }

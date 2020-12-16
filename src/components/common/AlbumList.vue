@@ -2,7 +2,7 @@
   <div ref="albumList" class="album-list">
     <section v-for="item in albumList" :key="item.id" class="album-item">
       <section class="album-cover">
-        <img :onerror="defaultImg" :src="item.blurPicUrl" alt="">
+        <img :onerror="defaultImg" :key="item.id" v-lazy="item.blurPicUrl" alt="">
         <span class="album-stor"><i class="el-icon-caret-right"></i>{{ item.type }}</span>
       </section>
       <section class="album-details">
@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   }
 }

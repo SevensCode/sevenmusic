@@ -40,12 +40,17 @@
         </section>
       </transition>
       <!-- 歌曲列表 -->
-      <transition name="show">
+      <transition name="show" mode="out-in">
         <PlayList v-if="!$store.state.allCommentAreaisShow" :play-list="songlist"></PlayList>
       </transition>
-      <transition name="show">
-        <Comment v-if="$store.state.allCommentAreaisShow" :comment-list="allComment" :get-comment-list="playlistReviews"
-                 :query="songlistQuery" :type="2"></Comment>
+      <transition name="show" mode="out-in">
+        <Comment :key="transitionKey.c" v-if="$store.state.allCommentAreaisShow" :comment-list="allComment"
+                 :type="2"></Comment>
+      </transition>
+      <transition name="show" mode="out-in">
+        <pager v-if="allComment.total>songlistQuery.limit&&$store.state.allCommentAreaisShow"
+               :handle-current-change="handleCurrentChange"
+               :limit="songlistQuery.limit" :total="allComment.total"></pager>
       </transition>
     </el-card>
     <!-- 其他 -->
@@ -55,7 +60,7 @@
         <span class="bar"></span>
         <span class="title">喜欢这个歌单的人</span>
         <section v-if="subscribers.length>0" class="collectorUser">
-          <img v-for="(item,i)  in subscribers" :key="i" :onerror="defaultImg" :src="item.avatarUrl"
+          <img v-for="(item,i)  in subscribers" :key="i" :onerror="defaultImg" v-lazy="item.avatarUrl"
                :title="item.nickname"
                alt="" @click="openUserInfo(item.userId)"/>
         </section>
@@ -66,7 +71,7 @@
         <span class="bar"></span>
         <span class="title">相关推荐</span>
         <section v-for="(item,i) in relatedSuggestion" :key="i" class="relatedSuggestion">
-          <img :onerror="defaultImg" :src="item.coverImgUrl" alt="" @click="openSonglist(item)">
+          <img :onerror="defaultImg" :key="i" v-lazy="item.coverImgUrl" alt="" @click="openSonglist(item)">
           <section class="content">
             <h3 class="suo1" @click="openSonglist(item)">{{ item.name }}</h3>
             <p class="suo1" @click="openUserInfo(item.creator.userId)">By.{{ item.creator.nickname }}</p>
@@ -98,7 +103,7 @@
       </transition>
     </section>
   </div>
-  <Loading v-else></Loading>
+  <Loading v-else height="650px"></Loading>
 </template>
 
 <script>
@@ -113,10 +118,12 @@ import {
 import { getMusicInfo, lyrics, playMusic } from '@/utils/playSong'
 import PlayList from '@/components/common/PlayList'
 import Comment from '@/components/common/comment'
+import Pager from '@/components/common/pager'
 
 export default {
   name: 'SongDetails',
   components: {
+    Pager,
     Comment,
     PlayList,
     Loading
@@ -136,6 +143,7 @@ export default {
       relatedSuggestion: [],
       // 最近评论列表
       recentComments: [],
+      // 全部评论列表
       allComment: [],
       isShow: false,
       // 歌单查询参数
@@ -149,7 +157,9 @@ export default {
       // allCommentAreaisShow: false,
       transitionKey: {
         a: 1,
-        b: 2
+        b: 2,
+        c: 3,
+        d: 4
       }
     }
   },
@@ -221,11 +231,15 @@ export default {
         path: '/accessUserDetails',
         query: { id: userId }
       })
+    },
+    handleCurrentChange (newPage) {
+      this.songlistQuery.offset = (newPage - 1) * this.songlistQuery.limit
+      this.playlistReviews()
     }
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   }
 }
@@ -237,18 +251,15 @@ export default {
   grid-template-columns: 980px 380px;
   justify-content: space-between;
   align-items: start;
-
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     .songImg {
       width: 200px;
       height: 200px;
       border-radius: 10px;
       position: relative;
-
       img {
         width: 100%;
         height: 100%;
@@ -257,7 +268,6 @@ export default {
         z-index: 2;
       }
     }
-
     .songImg::before {
       width: calc(100% - 10px);
       height: calc(100% - 10px);
@@ -270,31 +280,26 @@ export default {
       border-radius: 10px;
       z-index: 1;
     }
-
     .info {
       width: 700px;
       height: 210px;
-
       h1 {
         font-size: 24px;
         color: #4a4a4a;
         margin-bottom: 10px;
       }
-
       .user {
         display: flex;
         margin: 10px 0;
         justify-content: left;
         align-items: center;
         font-size: 14px;
-
         img {
           width: 30px;
           height: 30px;
           border-radius: 100%;
           cursor: pointer;
         }
-
         .name {
           margin: 0 25px;
           color: #4a4a4a;
@@ -302,33 +307,26 @@ export default {
           cursor: pointer;
           transition: .6s;
         }
-
         .name:hover {
           color: #FA2800;
         }
-
         .time {
           color: #808080;
         }
       }
-
       .tag {
         display: flex;
         //margin: 10px 0;
         justify-content: left;
         align-items: center;
-
         span {
           color: #4a4a4a;
           font-size: 14px;
         }
-
         ul {
           display: flex;
-
           li {
             margin: 0 8px;
-
             .el-tag {
               background: #FA2800;
               color: white;
@@ -339,7 +337,6 @@ export default {
               align-items: center;
               border: none;
               cursor: pointer;
-
               span {
                 color: white;
                 font-size: 12px;
@@ -348,7 +345,6 @@ export default {
           }
         }
       }
-
       .content {
         font-size: 14px;
         display: -webkit-box; /*将对象转为弹性盒模型展示*/
@@ -357,7 +353,6 @@ export default {
         overflow: hidden; /*超出隐藏*/
         margin: 10px 0;
       }
-
       .all {
         color: #FA2800;
         font-size: 14px;
@@ -365,7 +360,6 @@ export default {
       }
     }
   }
-
   .butAndKeep {
     width: 100%;
     height: 60px;
@@ -373,26 +367,21 @@ export default {
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 20px;
-
     .el-button {
       font-size: 14px;
       border-radius: 15px;
     }
-
     .all {
       background: #FA2800;
       color: white;
-
       i {
         font-size: 13px;
       }
     }
-
     i {
       margin-right: 6px;
     }
   }
-
   .viewSongList {
     width: 100%;
     margin-bottom: 20px;
@@ -400,7 +389,6 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-
     .el-button {
       background: #FA2800;
       color: white;
@@ -409,16 +397,13 @@ export default {
       border-radius: 15px;
     }
   }
-
   .other {
     margin-bottom: 20px;
-
     .title {
       font-size: 14px;
       color: #404040;
       font-weight: 1000;
     }
-
     .allComment {
       float: right;
       font-size: 13px;
@@ -426,7 +411,6 @@ export default {
       cursor: pointer;
       font-weight: 1000;
     }
-
     .collectorUser {
       display: grid;
       justify-content: center;
@@ -435,14 +419,12 @@ export default {
       grid-column-gap: 15px;
       grid-row-gap: 15px;
       margin-top: 20px;
-
       img {
         width: 37px;
         height: 37px;
         cursor: pointer;
       }
     }
-
     .nolike {
       width: 100%;
       text-align: center;
@@ -451,25 +433,21 @@ export default {
       color: #FA2800;
       font-weight: 1000;
     }
-
     .relatedSuggestion {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-top: 20px;
-
       img {
         width: 50px;
         height: 50px;
         border-radius: 5px;
         cursor: pointer;
       }
-
       .content {
         width: 270px;
         height: 50px;
         position: relative;
-
         h3 {
           width: 100%;
           font-size: 14px;
@@ -478,28 +456,23 @@ export default {
           transition: 0.3s;
           cursor: pointer;
         }
-
         h3:hover {
           color: #FA2800;
         }
-
         p {
           color: #a5a5c1;
           font-size: 12px;
           cursor: pointer;
         }
-
         p:hover {
           color: #FA2800;
         }
       }
     }
-
     .recentComments {
       margin-top: 20px;
       width: 100%;
       display: flex;
-
       img {
         width: 45px;
         height: 45px;
@@ -507,16 +480,13 @@ export default {
         cursor: pointer;
         margin-right: 10px;
       }
-
       .content {
         width: 100%;
-
         section {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 10px;
-
           h3 {
             width: 200px;
             font-size: 15px;
@@ -524,17 +494,14 @@ export default {
             cursor: pointer;
             transition: .3s;
           }
-
           h3:hover {
             color: #FA2800;
           }
-
           span {
             color: #a5a5c1;
             font-size: 12px;
           }
         }
-
         p {
           width: 100%;
           background: #f5f5f5;
@@ -547,7 +514,6 @@ export default {
         }
       }
     }
-
     .noComment {
       width: 100%;
       text-align: center;
@@ -558,20 +524,16 @@ export default {
     }
   }
 }
-
 .show-enter-active, .show-leave-active {
   transition: .5s;
 }
-
 .show-enter, .show-leave-to {
   opacity: 0;
   transform: translateY(100px);
 }
-
 .btn-enter-active, .btn-leave-active {
   transition: .3s;
 }
-
 .btn-enter, .btn-leave-to {
   opacity: 0;
   transform: translateX(100px);

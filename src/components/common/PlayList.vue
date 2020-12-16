@@ -16,7 +16,7 @@
     <el-table-column label="歌曲">
       <template slot-scope="scope">
         <section class="playList-name">
-          <img :onerror="defaultImg" v-if="scope.row.al.picUrl" :src="scope.row.al.picUrl" alt="">
+          <img :onerror="defaultImg" v-if="scope.row.al.picUrl" :key="scope.row.al.picUrl" v-lazy="scope.row.al.picUrl" alt="">
           <span :class="activeRed(scope.row)" class="suo1">{{ scope.row.name }}</span>
         </section>
       </template>
@@ -103,11 +103,11 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   },
   watch: {
-    playList: (playList) => {
+    playList: function (playList) {
       let index = 1
       playList.forEach(item => {
         item.index = index
@@ -124,55 +124,44 @@ export default {
     display: flex;
     justify-content: left;
     align-items: center;
-
     img {
       width: 35px;
       height: 35px;
       border-radius: 3px;
       margin-right: 10px;
     }
-
     span {
       font-size: 14px;
     }
   }
-
   .playlist-play {
     color: #FA2800;
     display: none;
   }
-
   .playlist-index {
   }
-
   .playlist-pause {
     color: #FA2800;
     cursor: pointer;
   }
-
   .playlist-author:hover {
     color: #FA2800;
     cursor: pointer;
   }
-
   .playlist-author:hover strong {
     color: #4a4a4a;
   }
 }
-
 .playList:hover .playlist-index {
   display: none;
 }
-
 .playList:hover .playlist-play {
   display: block;
   cursor: pointer;
 }
-
 .hide {
   display: none;
 }
-
 .activeRed {
   color: #FA2800;
 }

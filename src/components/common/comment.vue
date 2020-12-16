@@ -15,15 +15,14 @@
       </section>
     </section>
     <p v-else-if="!$store.state.isLogin" class="notLoggedIn">
-      <a @click="login">登录</a>
-      后可以评论！
+      <a @click="login">登录</a>后可以评论！
     </p>
     <section v-if="hotCommentList.length>0" class="title">
       <span class="bar"></span>
       <p>精彩评论</p>
     </section>
     <section v-for="item in hotCommentList" :key="item.commentId" class="commentList">
-      <img :onerror="defaultImg" :src="item.user.avatarUrl" alt="">
+      <img :onerror="defaultImg" :key="item.commentId" v-lazy="item.user.avatarUrl" alt="">
       <section class="comment-area">
         <section class="comment-header">
           <p class="userNickname">
@@ -42,7 +41,7 @@
             {{ item.beReplied[0].content }}
           </span>
         </p>
-        <section v-if="commentAndReplyQuery.commentId===item.commentId" class="userComment">
+        <section v-if="commentAndReplyQuery.commentId===item.commentId&&$store.state.isLogin" class="userComment">
           <section class="userComment-header">
             <p><i class="el-icon-user"></i><span>{{ userInfo.profile.nickname }}</span>，你好！</p>
             <button @click="hideReplyCommentArea">取消回复</button>
@@ -72,7 +71,7 @@
         type="info">
     </el-alert>
     <section v-for="(item,i) in latestCommentsList" :key="i" class="commentList">
-      <img :onerror="defaultImg" :src="item.user.avatarUrl" alt="">
+      <img :onerror="defaultImg" :key="item.commentId" v-lazy="item.user.avatarUrl" alt="">
       <section class="comment-area">
         <section class="comment-header">
           <p class="userNickname">{{ item.user.nickname }}<span>{{ item.time | howLongHasItBeenSinceLastTime }}</span>
@@ -89,7 +88,7 @@
             {{ item.beReplied[0].content }}
           </span>
         </p>
-        <section v-if="commentAndReplyQuery.commentId===item.commentId" class="userComment">
+        <section v-if="commentAndReplyQuery.commentId===item.commentId&&$store.state.isLogin" class="userComment">
           <section class="userComment-header">
             <p><i class="el-icon-user"></i><span>{{ userInfo.profile.nickname }}</span>，你好！</p>
             <button @click="hideReplyCommentArea">取消回复</button>
@@ -106,25 +105,18 @@
         </section>
       </section>
     </section>
-    <pager v-if="commentList.total>latestCommentsList.length" :handle-current-change="handleCurrentChange"
-           :limit="query.limit" :total="commentList.total"></pager>
   </div>
 </template>
 
 <script>
 
-import Pager from '@/components/common/pager'
 import { sendDeleteComment } from '@/API/server/api'
 
 export default {
   name: 'comment',
-  components: {
-    Pager
-  },
+  components: {},
   props: {
     commentList: Object,
-    query: Object,
-    getCommentList: Function,
     type: Number
   },
   data () {
@@ -168,6 +160,12 @@ export default {
     }
   },
   mounted () {
+    if (window.sessionStorage.getItem('userInfo')) {
+      this.userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
+      this.$store.commit('signedIn')
+    } else {
+      this.$store.commit('signOut')
+    }
     this.info()
   },
   methods: {
@@ -185,14 +183,14 @@ export default {
         })
       }
     },
-    // 分页器
-    handleCurrentChange (newPage) {
-      this.query.offset = (newPage - 1) * this.query.limit
-      this.getCommentList()
-    },
+    // // 分页器
+    // handleCurrentChange (newPage) {
+    //   this.$emit('fyq', (newPage - 1) * this.query.limit)
+    //   this.getCommentList()
+    // },
     // 显示回复评论区域，隐藏用户评论区域
     showReplyCommentArea (item) {
-      if (!this.$store.state.isLogin) return false
+      if (!this.$store.state.isLogin) return this.$message.info('请先登录')
       this.commentAndReplyQuery.commentId = item.commentId
       this.showUserCommentArea = false
     },
@@ -242,7 +240,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   },
   watch: {
@@ -268,37 +266,30 @@ export default {
   justify-content: left;
   align-items: center;
   margin: 20px 0;
-
   p {
     font-size: 14px;
     color: #4a4a4a;
     font-weight: 1000;
   }
 }
-
 .like {
   color: #FA2800;
 }
-
 .notLoggedIn {
   width: 100%;
   text-align: center;
-
   a {
     color: #FA2800;
     font-weight: 1000;
     cursor: pointer;
   }
 }
-
 .noComments {
   margin-top: 20px;
   width: 100%;
 }
-
 .userComment {
   width: 100%;
-
   .userComment-header {
     width: 100%;
     font-size: 14px;
@@ -308,14 +299,12 @@ export default {
     height: 32px;
     margin-bottom: 10px;
     margin-top: 10px;
-
     i {
       margin-right: 15px;
       font-weight: 1000;
       line-height: 30px;
       font-size: 16px;
     }
-
     button {
       padding: 5px 15px;
       border: 1px solid #dee3ff;
@@ -326,20 +315,17 @@ export default {
       cursor: pointer;
     }
   }
-
   .userComment-main {
     width: 100%;
     display: grid;
     grid-template-columns: 8% 92%;
     justify-content: space-between;
     align-items: flex-start;
-
     img {
       width: 50px;
       height: 50px;
       border-radius: 3px;
     }
-
     textarea {
       width: 100%;
       height: 80px;
@@ -351,13 +337,11 @@ export default {
       border-radius: 3px;
     }
   }
-
   .userComment-footer {
     width: 100%;
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
-
     button {
       font-size: 13px;
       border-radius: 3px;
@@ -370,34 +354,28 @@ export default {
     }
   }
 }
-
 .commentList {
   display: flex;
   margin-top: 20px;
   justify-content: space-between;
   margin-bottom: 20px;
-
   img {
     width: 45px;
     height: 45px;
     border-radius: 100%;
     margin-right: 20px;
   }
-
   .comment-area {
     flex: 1;
-
     .comment-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-
       .userNickname {
         font-size: 15px;
         color: #4a4a4a;
         font-weight: 600;
-
         span {
           font-size: 12px;
           color: #a5a5c1;
@@ -405,22 +383,18 @@ export default {
           font-weight: 500;
         }
       }
-
       .function {
         color: #a5a5c1;
-
         i {
           color: black;
           cursor: pointer;
         }
-
         span {
           font-size: 12px;
           margin-right: 5px;
         }
       }
     }
-
     .comment-content {
       width: 100%;
       font-size: 12px;
@@ -428,7 +402,6 @@ export default {
       background: #f5f5f5;
       border-radius: 3px;
       line-height: 22px;
-
       .beReplied {
         display: block;
         width: 100%;
@@ -436,7 +409,6 @@ export default {
         padding: 10px 10px;
         margin-top: 10px;
         color: #666666;
-
         .beRepliedUser {
           color: #FA2800;
         }

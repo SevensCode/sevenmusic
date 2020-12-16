@@ -52,8 +52,10 @@
       <!-- 主内容区域 -->
       <el-main>
         <!-- 精品歌单标签列表 -->
-        <SongList v-if="!$store.state.loading" :column="8" :songlist="boutiquePlaylist"></SongList>
-        <Loading v-else></Loading>
+        <section class="main">
+          <SongList v-show="!$store.state.loading" :column="8" :songlist="boutiquePlaylist"></SongList>
+          <Loading v-show="$store.state.loading"></Loading>
+        </section>
       </el-main>
       <Pager v-if="total>49" :handle-current-change="handleCurrentChange" :limit="query.limit" :total="total"></Pager>
     </section>
@@ -225,7 +227,7 @@ export default {
 
       .red {
         color: #fa2800;
-        background: rgba(250,40,0,0.1);
+        background: rgba(250, 40, 0, 0.1);
         border-radius: 15px;
         padding: 5px 10px;
       }
@@ -290,10 +292,19 @@ export default {
 }
 
 .el-main {
-  padding: 0;
   margin-top: 20px;
-  height: 620px;
-  background: white;
+  padding: 0;
+  height: 587px;
+  width: 100%;
   overflow: hidden;
+  position: relative;
+
+  .main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

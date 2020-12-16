@@ -1,7 +1,7 @@
 <template>
   <div ref="singer" class="singer-list">
     <section v-for="item in singerList" :key="item.id" class="singer-item">
-      <img :onerror="defaultImg" :src="item.img1v1Url" alt="" @click="openSingerDetails(item.id)">
+      <img :onerror="defaultImg" :key="item.id" v-lazy="item.img1v1Url" alt="" @click="openSingerDetails(item.id)">
       <h1 class="singer-name suo1">{{ item.name }}</h1>
       <p v-if="item.musicSize" class="singer-singleCount">单曲数 {{ item.musicSize }}</p>
     </section>
@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   },
   watch: {

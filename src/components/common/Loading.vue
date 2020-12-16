@@ -1,17 +1,35 @@
 <template>
-  <div class="loading"><i class="iconfont icon-loading"></i></div>
+  <div ref="loading" class="loading"><i class="iconfont icon-loading"></i></div>
 </template>
 
 <script>
 export default {
-  name: 'Loading'
+  name: 'Loading',
+  props: {
+    height: {
+      type: String,
+      default: '100%'
+    }
+  },
+  mounted () {
+    this.editHeight()
+  },
+  methods: {
+    editHeight () {
+      this.$refs.loading.style.height = this.height
+    }
+  },
+  watch: {
+    height: function () {
+      this.editHeight()
+    }
+  }
 }
 </script>
 
 <style lang="less" scoped>
 .loading {
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

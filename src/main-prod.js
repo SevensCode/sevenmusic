@@ -1,14 +1,19 @@
+/**
+ * 这是发布入口文件
+ * */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import './plugins/element.js'
+// 图片懒加载
+import VueLazyload from 'vue-lazyload'
 // 导入全局样式
 import './assets/css/global.css'
 import './assets/icon/iconfont.css'
 import store from './store'
 import Swiper, { Autoplay, Navigation, Pagination } from 'swiper'
 import tool from '@/utils/tool'
-
+// 导入图片懒加载
+Vue.use(VueLazyload)
 Vue.prototype.tool = tool
 Swiper.use([Navigation, Pagination, Autoplay])
 Vue.config.productionTip = false

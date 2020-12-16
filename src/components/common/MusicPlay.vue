@@ -209,7 +209,7 @@ export default {
       return this.$store.state.currentIndex
     },
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   },
   watch: {

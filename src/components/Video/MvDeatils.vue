@@ -1,5 +1,5 @@
 <template>
-  <div class="container layout">
+  <div v-if="isShow" class="container layout">
     <!-- 视频区域 -->
     <el-card class="mv">
       <video :src="mvUrl" controls height="530" width="950"></video>
@@ -21,7 +21,9 @@
         <p class="commentsTotal"><i class="iconfont icon-tubiao-"></i>Comments | {{ mvInfo.commentCount }} 条评论 </p>
       </section>
       <!-- mv评论区域 -->
-      <comment :comment-list="commentList" :get-comment-list="getMvComment" :type="1" :query="commentQuery"></comment>
+      <comment :comment-list="commentList" :get-comment-list="getMvComment" :type="1"></comment>
+      <pager v-if="commentList.total>commentQuery.limit" :handle-current-change="handleCurrentChange"
+             :limit="commentQuery.limit" :total="commentList.total"></pager>
     </el-card>
     <!-- MV简介与相关推荐区域 -->
     <div class="related">
@@ -36,7 +38,7 @@
         <span class="title">相关MV</span>
         <section v-for="item in similarMvList" :key="item.id" class="relatedMvList">
           <section class="frontCover">
-            <img :onerror="defaultImg" :src="item.cover" alt="">
+            <img :onerror="defaultImg" :key="item.id" v-lazy="item.cover" alt="">
             <i class="el-icon-caret-right"></i>
           </section>
           <h1 class="mvName"><i class="iconfont icon-MV"></i>{{ item.name }}</h1>
@@ -45,14 +47,21 @@
       </el-card>
     </div>
   </div>
+  <Loading v-else height="650px"></Loading>
 </template>
 
 <script>
 import { getMvComments, getMvData, getMvInfo, getMvUrl, getSimilarMv } from '@/API/server/api'
 import Comment from '@/components/common/comment'
+import Loading from '@/components/common/Loading'
+import Pager from '@/components/common/pager'
 
 export default {
-  components: { Comment },
+  components: {
+    Pager,
+    Loading,
+    Comment
+  },
   data () {
     return {
       // mvid
@@ -74,13 +83,15 @@ export default {
         before: 0
       },
       // mv评论列表
-      commentList: {}
+      commentList: {},
+      isShow: false
     }
   },
-  created () {
-    this.getMvDatas()
-    this.getMvComment()
-    this.getSimilarMv()
+  async mounted () {
+    await this.getMvDatas()
+    await this.getMvComment()
+    await this.getSimilarMv()
+    this.isShow = true
   },
   methods: {
     async getMvDatas () {
@@ -91,7 +102,6 @@ export default {
         id: this.id
       })
       this.mvUrl = mvUrl.data.url
-      console.log(this.mvUrl)
       // 获取mv评论数
       const { data: mvInfo } = await getMvInfo(this.id)
       this.mvInfo = mvInfo
@@ -104,11 +114,15 @@ export default {
     async getSimilarMv () {
       const { data: similarMv } = await getSimilarMv(this.id)
       this.similarMvList = similarMv.mvs
+    },
+    handleCurrentChange (newPage) {
+      this.commentQuery.offset = (newPage - 1) * this.commentQuery.limit
+      this.getMvComment()
     }
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   }
 }
@@ -119,41 +133,29 @@ export default {
   display: grid;
   grid-template-columns: 1000px 350px;
   justify-content: space-between;
-  align-items: start;
-
+  align-items: flex-start;
   .el-card {
     border-radius: 10px;
   }
-
   .mv {
     display: flex;
     justify-content: center;
     flex-direction: row;
-
     video {
       background: black;
     }
-
     .video-info {
       p {
         margin: 15px 0;
         width: 100%;
         display: flex;
-        justify-content: left;
+        justify-content: flex-start;
         align-items: center;
       }
-
-      .span {
-        display: flex;
-        justify-content: left;
-        align-items: center;
-      }
-
       .title {
         color: #4a4a4a;
         font-size: 16px;
         font-weight: 1000;
-
         i {
           color: #FA2800;
           margin-right: 5px;
@@ -161,26 +163,21 @@ export default {
           font-weight: 500;
         }
       }
-
       .tag {
         color: #FA2800;
-
         span {
           margin-right: 10px;
           font-size: 12px;
           cursor: pointer;
         }
       }
-
       .time-playcount {
         font-size: 12px;
         color: #999999;
-
         span {
           margin-right: 10px;
         }
       }
-
       .el-tag {
         color: black;
         font-weight: 700;
@@ -193,70 +190,59 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
-
         i {
           margin-right: 5px;
         }
       }
-
       .commentsTotal {
         width: 100%;
         height: 50px;
         display: flex;
-        justify-content: left;
+        justify-content: flex-start;
         align-items: center;
         color: #4a4a4a;
         font-size: 14px;
         border-bottom: 1px solid #f1f1f1;
         margin-bottom: 10px;
-
         i {
           margin-right: 10px;
         }
       }
     }
-
     .mvComments {
       width: 100%;
-
       .user {
         width: 100%;
         height: 50px;
         font-size: 14px;
         color: #4a4a4a;
         display: flex;
-        justify-content: left;
+        justify-content: flex-start;
         align-items: center;
-
         i {
           font-size: 15px;
           font-weight: 700;
           margin-right: 10px;
         }
-
         span {
           transition: .3s;
           cursor: pointer;
         }
-
         span:hover {
           color: #FA2800;
         }
       }
-
       .postComments {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        align-items: start;
+        align-items: flex-start;
         margin-bottom: 20px;
-
         img {
           width: 50px;
           height: 50px;
           border-radius: 3px;
         }
-
         textarea {
           width: 880px;
           height: 90px;
@@ -269,16 +255,13 @@ export default {
           border-radius: 3px;
         }
       }
-
       .btn {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-
         span {
           margin-right: 20px;
         }
-
         button {
           border: none;
           background: linear-gradient(90deg, #ff4b2b, #ff416c);
@@ -291,20 +274,17 @@ export default {
         }
       }
     }
-
     .pleaseSignIn {
       span {
         margin: 0 5px;
         transition: 0.5s;
         cursor: pointer;
       }
-
       span:hover {
         color: #FA2800;
       }
     }
   }
-
   .related {
     .introductionToMv {
       .title {
@@ -312,40 +292,33 @@ export default {
         font-weight: 1000;
         color: #4a4a4a;
       }
-
       p {
         color: #4a4a4a;
         font-size: 14px;
         margin-top: 20px;
       }
     }
-
     .relatedMv {
       margin-top: 20px;
-
       .title {
         font-size: 14px;
         font-weight: 1000;
         color: #4a4a4a;
       }
-
       .relatedMvList {
         width: 100%;
         height: 235px;
         margin-top: 20px;
-
         .frontCover {
           width: 100%;
           height: 180px;
           position: relative;
           border-radius: 3px;
-
           img {
             width: 100%;
             height: 100%;
             border-radius: 3px;
           }
-
           i {
             position: absolute;
             width: 32px;
@@ -365,23 +338,19 @@ export default {
             display: none;
           }
         }
-
         .frontCover:hover i {
           display: flex;
         }
-
         .mvName {
           font-size: 14px;
           font-weight: 1000;
           margin-top: 10px;
-
           i {
             margin-right: 5px;
             color: #FA2800;
             font-weight: 100;
           }
         }
-
         .author {
           font-size: 12px;
           color: #a5a5c1;

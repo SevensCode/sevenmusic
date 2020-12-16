@@ -24,7 +24,7 @@
     </section>
     <Singer :column="10" :singer-list="recommendedSingers"></Singer>
   </div>
-  <Loading v-else></Loading>
+  <Loading height="650px" v-else></Loading>
 </template>
 
 <script>
@@ -35,6 +35,7 @@ import Singer from '@/components/common/Singer'
 import Loading from '@/components/common/Loading'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
+import '@/assets/css/common/banner.less'
 
 export default {
   name: 'Find',
@@ -113,13 +114,13 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .box{
   padding: 0 5px;
 }
@@ -128,41 +129,5 @@ export default {
   font-weight: 1000;
   color: #4a4a4a;
   margin-top: 20px;
-}
-
-.banner {
-  .bannerImg {
-    width: 430px;
-    height: 160px;
-    border-radius: 5px;
-
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-    }
-  }
-
-  .swiper-pagination {
-    width: 100%;
-    position: relative;
-
-    .swiper-pagination-bullet {
-      width: 6px;
-      height: 6px;
-      background: #a3a3ac;
-      opacity: 0.8;
-      border-radius: 50%;
-      margin: 0 5px;
-      cursor: pointer;
-    }
-
-    .swiper-pagination-bullet-active {
-      opacity: 1;
-      width: 15px;
-      border-radius: 4px;
-      background: #FA2800;
-    }
-  }
 }
 </style>

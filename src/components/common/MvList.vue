@@ -2,7 +2,7 @@
   <div ref="mvList" class="mv-list">
     <section v-for="item in mvList" :key="item.id" class="mv-item">
       <section class="mv-cover" @click="openVideoPlayer(item)">
-        <img :onerror="defaultImg" :src="item.imgurl16v9||item.cover" alt="">
+        <img :onerror="defaultImg" :key="item.id" v-lazy="item.imgurl16v9||item.cover" alt="">
         <span class="mv-playCount"><i class="el-icon-caret-right"></i>{{ item.playCount | playCount }}</span>
         <section class="mv-mask">
           <span class="mv-author">{{ item.artistName }}</span>
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   }
 }

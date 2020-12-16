@@ -2,7 +2,7 @@
   <div ref="songlist" class="song-list">
     <section v-for="item in songlist" :key="item.id" class="song-item">
       <section class="song-cover" @click="openSongDetails(item)">
-        <img :src="item.picUrl||item.coverImgUrl" alt="" :onerror="defaultImg">
+        <img v-lazy="item.picUrl||item.coverImgUrl" :key="item.id" alt="" :onerror="defaultImg">
         <span v-if="item.playCount" class="song-playCount">
           <i class="el-icon-caret-right"></i>
           {{ item.playCount | playCount }}
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   },
   watch: {
@@ -51,10 +51,11 @@ export default {
 .song-list {
   margin-top: 20px;
   width: 100%;
+  height: 100%;
   display: grid;
   justify-content: space-between;
   grid-row-gap: 20px;
-  align-items: center;
+  align-items: start;
 
   .song-item {
     border-radius: 3px;

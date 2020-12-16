@@ -78,7 +78,7 @@
       </section>
     </section>
   </div>
-  <Loading v-else></Loading>
+  <Loading v-else height="650px"></Loading>
 </template>
 
 <script>

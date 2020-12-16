@@ -13,7 +13,7 @@
         </span>
       </section>
       <section class="newSong-info">
-        <img :onerror="defaultImg" :src="item.picUrl" alt="">
+        <img :onerror="defaultImg" :key="item.id" v-lazy="item.picUrl" alt="">
         <section class="songTitleAndAuthor">
           <p class="songTitle suo1">{{ item.name }}</p>
           <p class="author suo1">
@@ -86,7 +86,7 @@ export default {
   },
   computed: {
     defaultImg () {
-      return 'this.src="' + require('../../assets/img/defaultImg.png') + '"'
+      return 'this.src="' + require('../../assets/img/tpwzd.jpg') + '"'
     }
   },
   watch: {

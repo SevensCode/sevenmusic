@@ -1,31 +1,31 @@
 <template>
   <div class="searchDialog">
     <div @click="$store.commit('hideSearchDialog')"></div>
-      <section class="rong">
-        <section class="search">
-          <label>
-            <input v-model="keywords" placeholder="请输入关键字并按回车即可搜索..." type="text" @keyup.enter="search">
-          </label>
-        </section>
-        <section v-if="searchHistoryList.length!==0" class="popularSearch">
-          <header>
-            <p><i class="iconfont icon-jiaoyin"></i>搜索历史</p>
-            <el-tag v-for="(item,i) in searchHistoryList" :key="i" closable @click="hotSearch(item)"
-                    @close="removeTag(i)">
-              {{ item }}
-            </el-tag>
-          </header>
-        </section>
-        <section class="popularSearch">
-          <header>
-            <p><i class="iconfont icon-huo"></i>热门搜索</p>
-            <el-tag v-for="(item,i) in hotSearchList" :key="i" @click="hotSearch(item.first)">{{
-                item.first
-              }}
-            </el-tag>
-          </header>
-        </section>
+    <section class="rong">
+      <section class="search">
+        <label>
+          <input v-model="keywords" placeholder="请输入关键字并按回车即可搜索..." type="text" @keyup.enter="search">
+        </label>
       </section>
+      <section v-if="searchHistoryList.length!==0" class="popularSearch">
+        <header>
+          <p><i class="iconfont icon-jiaoyin"></i>搜索历史</p>
+          <el-tag v-for="(item,i) in searchHistoryList" :key="i" closable @click="hotSearch(item)"
+                  @close="removeTag(i)">
+            {{ item }}
+          </el-tag>
+        </header>
+      </section>
+      <section class="popularSearch">
+        <header>
+          <p><i class="iconfont icon-huo"></i>热门搜索</p>
+          <el-tag v-for="(item,i) in hotSearchList" :key="i" @click="hotSearch(item.first)">{{
+              item.first
+            }}
+          </el-tag>
+        </header>
+      </section>
+    </section>
   </div>
 </template>
 
@@ -110,16 +110,16 @@ export default {
   left: 0;
   top: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, .12);
-  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
+
   div {
     width: 100%;
     height: 100%;
     position: absolute;
     left: 0;
+    background: inherit;
     top: 0;
     z-index: 100002;
   }
@@ -206,16 +206,5 @@ export default {
       }
     }
   }
-}
-
-.searchDialog:after {
-  content: "";
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  position: absolute;
-  left: 0;
-  top: 0;
-  filter: blur(15px); /*为了模糊更明显，调高模糊度*/
-  z-index: 10001;
 }
 </style>

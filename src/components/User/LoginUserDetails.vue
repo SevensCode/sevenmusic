@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isShow">
     <section class="bj"></section>
     <section class="main container">
       <!-- 个人信息 -->
@@ -50,8 +50,7 @@
           </section>
         </header>
         <button><i class="iconfont icon-bofang1"></i>播放全部</button>
-        <PlayList v-if="isShow" :play-list="songRankingList"></PlayList>
-        <Loading v-else></Loading>
+        <PlayList :play-list="songRankingList"></PlayList>
       </el-card>
       <!-- 我的歌单列表 -->
       <section class="mySongList">
@@ -76,6 +75,7 @@
       </section>
     </section>
   </div>
+  <Loading v-else height="650px"></Loading>
 </template>
 
 <script>
@@ -114,9 +114,9 @@ export default {
       isShow: false
     }
   },
-  mounted () {
-    this.getrankingList()
-    this.getMyCreateSongList()
+  async mounted () {
+    await this.getrankingList()
+    await this.getMyCreateSongList()
   },
   methods: {
     // 获取听歌排行列表
@@ -443,7 +443,8 @@ export default {
     }
   }
 }
-.noSonglist{
+
+.noSonglist {
   text-align: center;
   width: 100%;
   margin-top: 20px;
