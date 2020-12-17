@@ -14,14 +14,17 @@
       <section class="form">
         <label>
           <i class="el-icon-user"></i>
-          <input v-model="loginForm.phone" @blur="checkPhone" type="text" placeholder="Phone">
+          <input ref="phone" v-model="loginForm.phone" @blur="checkPhone" type="text" placeholder="Phone">
         </label>
-        <strong ref="phone"></strong>
         <label>
           <i class="el-icon-lock"></i>
-          <input v-model="loginForm.password" @blur="checkPassword" type="password" placeholder="Password">
+          <input ref="password" v-model="loginForm.password" @blur="checkPassword" type="password"
+                 placeholder="Password">
         </label>
-        <strong ref="password"></strong>
+        <label class="rememberAccountName">
+          <input type="checkbox" v-model="isRememberAccountName">
+          <span>是否记住手机号</span>
+        </label>
         <button @click="Login"><span class="s1"></span><i class="iconfont icon-youjiantou"></i><span class="s2"></span>
         </button>
       </section>
@@ -48,7 +51,15 @@ export default {
         password: ''
       },
       phoneVerification: false,
-      passwordVerification: false
+      passwordVerification: false,
+      // 是否记住用户名
+      isRememberAccountName: false
+    }
+  },
+  mounted () {
+    if (window.localStorage.getItem('RememberAccountName')) {
+      this.loginForm.phone = parseInt(window.localStorage.getItem('RememberAccountName'))
+      this.isRememberAccountName = true
     }
   },
   methods: {
@@ -65,6 +76,11 @@ export default {
       // 保存用户信息
       window.sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
       this.$message.success('登录成功')
+      // 判断是否记住账号
+      if (this.isRememberAccountName) {
+        window.localStorage.setItem('RememberAccountName', this.loginForm.phone)
+      }
+      // 判断是否从别的页面跳转来的
       if (window.sessionStorage.getItem('recording')) {
         return await this.$router.push(window.sessionStorage.getItem('recording'))
       }
@@ -80,26 +96,28 @@ export default {
     checkPhone () {
       const reg = /^[1]([3-9])[0-9]{9}$/
       if (this.loginForm.phone.length === 0) {
-        this.$refs.phone.innerHTML = ''
         this.phoneVerification = false
+        this.$refs.phone.classList.remove('error')
       } else if (reg.test(this.loginForm.phone)) {
-        this.$refs.phone.innerHTML = ''
         this.phoneVerification = true
+        this.$refs.phone.classList.remove('error')
       } else {
-        this.$refs.phone.innerHTML = '请输入正确的手机号!'
+        this.$message.error('请输入正确的手机号!')
+        this.$refs.phone.classList.add('error')
         this.phoneVerification = false
       }
     },
     checkPassword () {
       if (this.loginForm.password.length === 0) {
-        this.$refs.password.innerHTML = ''
         this.passwordVerification = false
+        this.$refs.password.classList.remove('error')
       } else if (this.loginForm.password.length >= 6 && this.loginForm.password.length <= 18) {
         this.passwordVerification = true
-        this.$refs.password.innerHTML = ''
+        this.$refs.password.classList.remove('error')
       } else {
         this.passwordVerification = false
-        this.$refs.password.innerHTML = '长度为8-18个字符'
+        this.$message.error('长度为8-18个字符')
+        this.$refs.password.classList.add('error')
       }
     }
   }
@@ -157,8 +175,12 @@ export default {
     width: 360px;
     height: 416px;
     background: white;
-    padding: 50px 30px;
+    padding: 30px 30px;
     color: #555555;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 3px;
     p {
       text-align: center;
       font-weight: 600;
@@ -166,20 +188,11 @@ export default {
       margin-bottom: 50px;
     }
     .form {
-      strong {
-        width: 100%;
-        display: block;
-        height: 40px;
-        color: #FA2800;
-        line-height: 40px;
-        padding-left: 40px;
-        font-size: 14px;
-        letter-spacing: 2px;
-      }
       label {
         display: flex;
         justify-content: left;
         align-items: center;
+        height: 60px;
         input {
           width: 260px;
           color: #7AB6B6;
@@ -191,8 +204,12 @@ export default {
           box-shadow: 0 0 0 0 transparent;
           border: none;
           border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-          border-radius: 0;
+          border-radius: 3px;
           display: inline-block;
+        }
+        .error {
+          border: 2px solid #fa2800;
+          outline-color: #fa2800;
         }
         i {
           font-size: 20px;
@@ -217,6 +234,7 @@ export default {
         outline: none;
         overflow: hidden;
         cursor: pointer;
+        clear: both;
         i {
           position: relative;
           z-index: 10;
@@ -247,6 +265,24 @@ export default {
       button:hover span {
         width: 100%;
         height: 100%;
+      }
+      .rememberAccountName {
+        width: 120px;
+        text-align: center;
+        float: right;
+        height: 30px;
+        user-select: none;
+        margin-bottom: 20px;
+        input {
+          width: 17px;
+          height: 17px;
+          line-height: 30px;
+          margin-top: 1px;
+        }
+        span {
+          margin-left: 5px;
+          font-size: 14px;
+        }
       }
     }
     .register {

@@ -14,30 +14,28 @@
       <section class="form">
         <label>
           <span>手机号 :</span>
-          <input v-model="registerQuery.phone" @blur="checkPhone" type="text" placeholder="Phone">
+          <input ref="phone" v-model="registerQuery.phone" @blur="checkPhone" type="text" placeholder="你的手机号">
         </label>
-        <strong ref="phone"></strong>
         <label>
           <span>验证码 :</span>
-          <input v-model="registerQuery.captcha" type="text" placeholder="Captcha">
+          <input v-model="registerQuery.captcha" type="text" placeholder="点击右边按钮">
           <input type="button" ref="yzm" @click="verificationCode" value="获取验证码" class="captcha">
         </label>
-        <strong ref="captcha"></strong>
         <label>
           <span>密码 :</span>
-          <input v-model="registerQuery.password" @blur="checkPassword" type="password" placeholder="Password">
+          <input ref="password" v-model="registerQuery.password" @blur="checkPassword" type="password"
+                 placeholder="长度为8-18个字符且由数字、字母组成!">
         </label>
-        <strong ref="password"></strong>
         <label>
           <span>确定密码 :</span>
-          <input v-model="confirmPassword" @blur="checkConfirmPassword" type="password" placeholder="ConfirmPassword">
+          <input ref="confirmPassword" v-model="confirmPassword" @blur="checkConfirmPassword" type="password"
+                 placeholder="再次输入密码">
         </label>
-        <strong ref="confirmPassword"></strong>
         <label>
           <span>昵称 :</span>
-          <input v-model="registerQuery.nickname" @blur="checkNickname" type="text" placeholder="Nickname">
+          <input ref="nickname" v-model="registerQuery.nickname" @blur="checkNickname" type="text"
+                 placeholder="长度为2-12个字符">
         </label>
-        <strong ref="nickname"></strong>
         <button class="b1" @click="register"><span class="s1"></span><i class="iconfont icon-youjiantou"></i><span
             class="s2"></span>
         </button>
@@ -56,9 +54,9 @@
 <script>
 import {
   getVerificationCode,
-  // checkIfTheMobilePhoneNumberIsRegistered,
   verificationcode,
-  registerOrChangePassword
+  registerOrChangePassword,
+  checkIfTheMobilePhoneNumberIsRegistered
 } from '@/API/server/userApi'
 
 export default {
@@ -91,13 +89,13 @@ export default {
     checkPhone () {
       const reg = /^[1]([3-9])[0-9]{9}$/
       if (this.registerQuery.phone.length === 0) {
-        this.$refs.phone.innerHTML = ''
         this.phoneVerification = false
+        this.$refs.phone.classList.remove('error')
       } else if (reg.test(this.registerQuery.phone)) {
-        this.$refs.phone.innerHTML = ''
         this.phoneVerification = true
       } else {
-        this.$refs.phone.innerHTML = '请输入正确的手机号!'
+        this.$message.error('请输入正确的手机号!')
+        this.$refs.phone.classList.add('error')
         this.phoneVerification = false
       }
     },
@@ -111,35 +109,42 @@ export default {
     checkPassword () {
       const verify = /^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9]{8,18}$/
       if (this.registerQuery.password.length === 0) {
-        this.$refs.password.innerHTML = ''
+        this.$refs.password.classList.remove('error')
         this.passwordVerification = false
       } else if (verify.test(this.registerQuery.password)) {
         this.passwordVerification = true
-        this.$refs.password.innerHTML = ''
       } else {
         this.passwordVerification = false
-        this.$refs.password.innerHTML = '长度为8-18个字符且由数字、字母组成!'
+        this.$message.error('长度为8-18个字符且由数字、字母组成!')
+        this.$refs.password.classList.add('error')
       }
     },
     checkConfirmPassword () {
-      if (this.registerQuery.password === this.confirmPassword) {
+      if (this.confirmPassword.length === 0) {
+        this.confirmPasswordVerification = false
+        this.$refs.confirmPassword.classList.remove('error')
+      } else if (this.registerQuery.password.length === 0) {
+        this.$message.error('亲，先把密码输入了再输入确定密码！')
+        this.$refs.confirmPassword.classList.add('error')
+        this.confirmPasswordVerification = false
+      } else if (this.registerQuery.password === this.confirmPassword) {
         this.confirmPasswordVerification = true
-        this.$refs.confirmPassword.innerHTML = ''
       } else {
         this.confirmPasswordVerification = false
-        this.$refs.confirmPassword.innerHTML = '俩次输入的密码不一样'
+        this.$message.error('俩次输入的密码不一样')
+        this.$refs.confirmPassword.classList.add('error')
       }
     },
     checkNickname () {
       if (this.registerQuery.nickname.length === 0) {
-        this.$refs.nickname.innerHTML = ''
         this.nicknameVerification = false
+        this.$refs.nickname.classList.remove('error')
       } else if (this.registerQuery.nickname.length < 2 || this.registerQuery.nickname.length > 12) {
         this.nicknameVerification = false
-        this.$refs.nickname.innerHTML = '长度为2-12个字符'
+        this.$message.error('长度为2-12个字符')
+        this.$refs.nickname.classList.add('error')
       } else {
         this.nicknameVerification = true
-        this.$refs.nickname.innerHTML = ''
       }
     },
     // 发生验证码
@@ -169,15 +174,15 @@ export default {
         return this.$message.error('请填写完整表单')
       }
       // 验证手机号是否已注册
-      // const { data: res } = await checkIfTheMobilePhoneNumberIsRegistered(this.registerQuery.phone)
-      // if (res.exist === 1) return this.$message.warning('手机号已注册!')
+      const { data: res } = await checkIfTheMobilePhoneNumberIsRegistered(this.registerQuery.phone)
+      if (res.exist === 1) return this.$message.warning('手机号已注册!')
       // 验证验证码是否正确
       verificationcode(this.registerQuery.phone, this.registerQuery.captcha).then(async (data) => {
         if (data.data.data) {
           const { data: register } = await registerOrChangePassword(this.registerQuery)
           if (register.code === 200) {
             this.$message.success('注册成功！已自动返回登录页面')
-            this.$router.push('/login')
+            await this.$router.push('/login')
           }
         }
       }).catch((e) => {
@@ -243,7 +248,7 @@ export default {
     width: 400px;
     height: 500px;
     background: white;
-    padding: 10px 30px;
+    padding: 30px 30px 10px 30px;
     color: #555555;
     position: relative;
     .title {
@@ -253,23 +258,12 @@ export default {
       margin-bottom: 20px;
     }
     .form {
-      strong {
-        width: 100%;
-        display: block;
-        height: 30px;
-        color: #FA2800;
-        line-height: 30px;
-        padding-left: 80px;
-        font-size: 10px;
-        letter-spacing: 2px;
-        user-select: none;
-        font-weight: 1000;
-      }
       label {
         display: flex;
         justify-content: space-between;
         align-items: center;
         position: relative;
+        height: 60px;
         input {
           width: 260px;
           color: #7AB6B6;
@@ -281,8 +275,16 @@ export default {
           box-shadow: 0 0 0 0 transparent;
           border: none;
           border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-          border-radius: 0;
+          border-radius: 3px;
           display: inline-block;
+        }
+        input::placeholder {
+          font-size: 12px;
+          color: #4a4a4a;
+        }
+        .error {
+          border: 2px solid #fa2800;
+          outline-color: #fa2800;
         }
         i {
           font-size: 20px;
@@ -334,7 +336,7 @@ export default {
         width: 50%;
         height: 45px;
         padding: 7px 30px;
-        margin: 0 auto 15px;
+        margin: 10px auto 15px;
         border: none;
         display: block;
         position: relative;
