@@ -12,6 +12,7 @@ import './assets/icon/iconfont.css'
 import store from './store'
 import Swiper, { Autoplay, Navigation, Pagination } from 'swiper'
 import tool from '@/utils/tool'
+
 // 导入图片懒加载
 Vue.use(VueLazyload)
 Vue.prototype.tool = tool

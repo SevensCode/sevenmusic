@@ -10,11 +10,11 @@
         </el-col>
         <!-- 导航栏区域 -->
         <el-col :span="14" class="menu">
-          <router-link :to="{path:'/find'}" active-class="active">发现音乐</router-link>
-          <router-link :to="{path:'/leaderboard'}" active-class="active">排行榜</router-link>
-          <router-link :to="{path:'/songList'}" active-class="active">歌单</router-link>
-          <router-link :to="{path:'/singer'}" active-class="active">歌手</router-link>
-          <router-link :to="{path:'/video'}" active-class="active">视频</router-link>
+          <router-link :to="{path:'/find'}" exact-active-class="active" active-class="active">发现音乐</router-link>
+          <router-link :to="{path:'/leaderboard'}" exact-active-class="active" active-class="active">排行榜</router-link>
+          <router-link :to="{path:'/songList'}" exact-active-class="active" active-class="active">歌单</router-link>
+          <router-link :to="{path:'/singer'}" exact-active-class="active" active-class="active">歌手</router-link>
+<!--          <router-link :to="{path:'/video'}" active-class="active">视频</router-link>-->
           <router-link :to="{path:'/mv'}" active-class="active">MV</router-link>
         </el-col>
         <el-col :span="6">

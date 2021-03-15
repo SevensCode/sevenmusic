@@ -2,8 +2,7 @@ import axios from 'axios'
 import store from '@/store/index'
 // 配置请求的根路径
 
-// axios.defaults.baseURL = 'http://121.4.76.27:3000/'
-axios.defaults.baseURL = 'http://localhost:3000/'
+axios.defaults.baseURL = 'http://121.4.76.27:3000/'
 axios.interceptors.request.use(config => {
   store.commit('showLoading')
   return config
