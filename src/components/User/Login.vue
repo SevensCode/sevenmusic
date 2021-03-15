@@ -2,7 +2,7 @@
   <div class="login">
     <header>
       <h1>SevensMusic</h1>
-      <p>仿网易云音乐</p>
+<!--      <p>仿网易云音乐</p>-->
       <section>
         <router-link to="/"><i class="iconfont icon-tubiao115"></i></router-link>
         <p></p>
