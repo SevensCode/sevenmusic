@@ -1,16 +1,16 @@
 # sevenmusic
 
-## Project setup
+##2、安装依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+##2、运行
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+##3、打包
 ```
 npm run build
 ```
