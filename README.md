@@ -1,6 +1,6 @@
 # sevenmusic
 
-##2、安装依赖
+##1、安装依赖
 ```
 npm install
 ```
